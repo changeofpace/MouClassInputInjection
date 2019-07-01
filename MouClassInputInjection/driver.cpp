@@ -1,0 +1,444 @@
+/*++
+
+Copyright (c) 2019 changeofpace. All rights reserved.
+
+Use of this source code is governed by the MIT license. See the 'LICENSE' file
+for more information.
+
+--*/
+
+#include <fltKernel.h>
+
+#include "debug.h"
+#include "log.h"
+#include "mouclass_input_injection.h"
+#include "mouhid.h"
+#include "mouhid_hook_manager.h"
+
+#include "../Common/ioctl.h"
+
+
+//=============================================================================
+// Private Prototypes
+//=============================================================================
+EXTERN_C
+DRIVER_INITIALIZE
+DriverEntry;
+
+EXTERN_C
+static
+DRIVER_UNLOAD
+DriverUnload;
+
+_Dispatch_type_(IRP_MJ_CREATE)
+EXTERN_C
+static
+DRIVER_DISPATCH
+DispatchCreate;
+
+_Dispatch_type_(IRP_MJ_CLOSE)
+EXTERN_C
+static
+DRIVER_DISPATCH
+DispatchClose;
+
+_Dispatch_type_(IRP_MJ_DEVICE_CONTROL)
+EXTERN_C
+static
+DRIVER_DISPATCH
+DispatchDeviceControl;
+
+
+//=============================================================================
+// Meta Interface
+//=============================================================================
+_Use_decl_annotations_
+EXTERN_C
+NTSTATUS
+DriverEntry(
+    PDRIVER_OBJECT pDriverObject,
+    PUNICODE_STRING pRegistryPath
+)
+{
+    PDEVICE_OBJECT pDeviceObject = NULL;
+    UNICODE_STRING usDeviceName = {};
+    UNICODE_STRING usSymbolicLinkName = {};
+    BOOLEAN fSymbolicLinkCreated = FALSE;
+    BOOLEAN fMclLoaded = FALSE;
+    BOOLEAN fMhkLoaded = FALSE;
+    BOOLEAN fMiiLoaded = FALSE;
+    NTSTATUS ntstatus = STATUS_SUCCESS;
+
+    UNREFERENCED_PARAMETER(pRegistryPath);
+
+    DBG_PRINT("Loading %ls.\n", NT_DEVICE_NAME_U);
+
+    usDeviceName = RTL_CONSTANT_STRING(NT_DEVICE_NAME_U);
+
+    ntstatus = IoCreateDevice(
+        pDriverObject,
+        0,
+        &usDeviceName,
+        FILE_DEVICE_MOUCLASS_INPUT_INJECTION,
+        FILE_DEVICE_SECURE_OPEN,
+        TRUE,
+        &pDeviceObject);
+    if (!NT_SUCCESS(ntstatus))
+    {
+        ERR_PRINT("IoCreateDevice failed: 0x%X\n", ntstatus);
+        goto exit;
+    }
+    //
+    pDriverObject->MajorFunction[IRP_MJ_CREATE] = DispatchCreate;
+    pDriverObject->MajorFunction[IRP_MJ_CLOSE] = DispatchClose;
+    pDriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] =
+        DispatchDeviceControl;
+    pDriverObject->DriverUnload = DriverUnload;
+
+    //
+    // Create a symbolic link for the user mode client.
+    //
+    usSymbolicLinkName = RTL_CONSTANT_STRING(SYMBOLIC_LINK_NAME_U);
+
+    ntstatus = IoCreateSymbolicLink(&usSymbolicLinkName, &usDeviceName);
+    if (!NT_SUCCESS(ntstatus))
+    {
+        ERR_PRINT("IoCreateSymbolicLink failed: 0x%X\n", ntstatus);
+        goto exit;
+    }
+    //
+    fSymbolicLinkCreated = TRUE;
+
+    //
+    // Load the driver modules.
+    //
+    ntstatus = MhdDriverEntry();
+    if (!NT_SUCCESS(ntstatus))
+    {
+        ERR_PRINT("MhdDriverEntry failed: 0x%X\n", ntstatus);
+        goto exit;
+    }
+
+    ntstatus = MclDriverEntry(pDriverObject);
+    if (!NT_SUCCESS(ntstatus))
+    {
+        ERR_PRINT("MclDriverEntry failed: 0x%X\n", ntstatus);
+        goto exit;
+    }
+    //
+    fMclLoaded = TRUE;
+
+    ntstatus = MhkDriverEntry();
+    if (!NT_SUCCESS(ntstatus))
+    {
+        ERR_PRINT("MhkDriverEntry failed: 0x%X\n", ntstatus);
+        goto exit;
+    }
+    //
+    fMhkLoaded = TRUE;
+
+    ntstatus = MiiDriverEntry();
+    if (!NT_SUCCESS(ntstatus))
+    {
+        ERR_PRINT("MiiDriverEntry failed: 0x%X\n", ntstatus);
+        goto exit;
+    }
+    //
+    fMiiLoaded = TRUE;
+
+    DBG_PRINT("%ls loaded.\n", NT_DEVICE_NAME_U);
+
+exit:
+    if (!NT_SUCCESS(ntstatus))
+    {
+        if (fMiiLoaded)
+        {
+            MiiDriverUnload();
+        }
+
+        if (fMhkLoaded)
+        {
+            MhkDriverUnload();
+        }
+
+        if (fMclLoaded)
+        {
+            MclDriverUnload();
+        }
+
+        if (fSymbolicLinkCreated)
+        {
+            VERIFY(IoDeleteSymbolicLink(&usSymbolicLinkName));
+        }
+
+        if (pDeviceObject)
+        {
+            IoDeleteDevice(pDeviceObject);
+        }
+    }
+
+    return ntstatus;
+}
+
+
+_Use_decl_annotations_
+EXTERN_C
+static
+VOID
+DriverUnload(
+    PDRIVER_OBJECT pDriverObject
+)
+{
+    UNICODE_STRING usSymbolicLinkName = {};
+
+    DBG_PRINT("Unloading %ls.\n", NT_DEVICE_NAME_U);
+
+    //
+    // Unload the driver modules.
+    //
+    MiiDriverUnload();
+    MhkDriverUnload();
+    MclDriverUnload();
+
+    //
+    // Release driver resources.
+    //
+    usSymbolicLinkName = RTL_CONSTANT_STRING(SYMBOLIC_LINK_NAME_U);
+
+    VERIFY(IoDeleteSymbolicLink(&usSymbolicLinkName));
+
+    if (pDriverObject->DeviceObject)
+    {
+        IoDeleteDevice(pDriverObject->DeviceObject);
+    }
+
+    DBG_PRINT("%ls unloaded.\n", NT_DEVICE_NAME_U);
+}
+
+
+//=============================================================================
+// Private Interface
+//=============================================================================
+_Use_decl_annotations_
+EXTERN_C
+static
+NTSTATUS
+DispatchCreate(
+    PDEVICE_OBJECT pDeviceObject,
+    PIRP pIrp
+)
+{
+    UNREFERENCED_PARAMETER(pDeviceObject);
+    DBG_PRINT("Processing IRP_MJ_CREATE.\n");
+    IoCompleteRequest(pIrp, IO_NO_INCREMENT);
+    return STATUS_SUCCESS;
+}
+
+
+_Use_decl_annotations_
+EXTERN_C
+static
+NTSTATUS
+DispatchClose(
+    PDEVICE_OBJECT pDeviceObject,
+    PIRP pIrp
+)
+{
+    UNREFERENCED_PARAMETER(pDeviceObject);
+    DBG_PRINT("Processing IRP_MJ_CLOSE.\n");
+    IoCompleteRequest(pIrp, IO_NO_INCREMENT);
+    return STATUS_SUCCESS;
+}
+
+
+_Use_decl_annotations_
+EXTERN_C
+static
+NTSTATUS
+DispatchDeviceControl(
+    PDEVICE_OBJECT pDeviceObject,
+    PIRP pIrp
+)
+{
+    PIO_STACK_LOCATION pIrpStack = IoGetCurrentIrpStackLocation(pIrp);
+    PVOID pSystemBuffer = pIrp->AssociatedIrp.SystemBuffer;
+    ULONG cbInput = pIrpStack->Parameters.DeviceIoControl.InputBufferLength;
+    ULONG cbOutput = pIrpStack->Parameters.DeviceIoControl.OutputBufferLength;
+    PINITIALIZE_MOUSE_DEVICE_STACK_CONTEXT_REPLY
+        pInitMouseDeviceStackContextReply = NULL;
+    PINJECT_MOUSE_BUTTON_INPUT_REQUEST pInjectMouseButtonInputRequest = NULL;
+    PINJECT_MOUSE_MOVEMENT_INPUT_REQUEST pInjectMouseMovementInputRequest =
+        NULL;
+    PINJECT_MOUSE_INPUT_PACKET_REQUEST pInjectMouseInputPacketRequest = NULL;
+    ULONG_PTR Information = 0;
+    NTSTATUS ntstatus = STATUS_SUCCESS;
+
+    UNREFERENCED_PARAMETER(pDeviceObject);
+
+    switch (pIrpStack->Parameters.DeviceIoControl.IoControlCode)
+    {
+        case IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT:
+            DBG_PRINT(
+                "Processing IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT.\n");
+
+            if (cbInput)
+            {
+                ntstatus = STATUS_INVALID_PARAMETER_4;
+                goto exit;
+            }
+
+            pInitMouseDeviceStackContextReply =
+                (PINITIALIZE_MOUSE_DEVICE_STACK_CONTEXT_REPLY)pSystemBuffer;
+            if (!pInitMouseDeviceStackContextReply)
+            {
+                ntstatus = STATUS_INVALID_PARAMETER_5;
+                goto exit;
+            }
+
+            if (sizeof(*pInitMouseDeviceStackContextReply) != cbOutput)
+            {
+                ntstatus = STATUS_INVALID_PARAMETER_6;
+                goto exit;
+            }
+
+            ntstatus = MiiInitializeMouseDeviceStackContext(
+                &pInitMouseDeviceStackContextReply->DeviceStackInformation);
+            if (!NT_SUCCESS(ntstatus))
+            {
+                ERR_PRINT(
+                    "MiiInitializeMouseDeviceStackContext failed: 0x%X\n",
+                    ntstatus);
+                goto exit;
+            }
+
+            Information = sizeof(*pInitMouseDeviceStackContextReply);
+
+            break;
+
+        case IOCTL_INJECT_MOUSE_BUTTON_INPUT:
+            DBG_PRINT("Processing IOCTL_INJECT_MOUSE_BUTTON_INPUT.\n");
+
+            pInjectMouseButtonInputRequest =
+                (PINJECT_MOUSE_BUTTON_INPUT_REQUEST)pSystemBuffer;
+            if (!pInjectMouseButtonInputRequest)
+            {
+                ntstatus = STATUS_INVALID_PARAMETER_3;
+                goto exit;
+            }
+
+            if (sizeof(*pInjectMouseButtonInputRequest) != cbInput)
+            {
+                ntstatus = STATUS_INVALID_PARAMETER_4;
+                goto exit;
+            }
+
+            if (cbOutput)
+            {
+                ntstatus = STATUS_INVALID_PARAMETER_6;
+                goto exit;
+            }
+
+            ntstatus = MiiInjectMouseButtonInput(
+                (HANDLE)pInjectMouseButtonInputRequest->ProcessId,
+                pInjectMouseButtonInputRequest->ButtonFlags,
+                pInjectMouseButtonInputRequest->ButtonData);
+            if (!NT_SUCCESS(ntstatus))
+            {
+                ERR_PRINT("MiiInjectMouseButtonInput failed: 0x%X\n",
+                    ntstatus);
+                goto exit;
+            }
+
+            break;
+
+        case IOCTL_INJECT_MOUSE_MOVEMENT_INPUT:
+            DBG_PRINT("Processing IOCTL_INJECT_MOUSE_MOVEMENT_INPUT.\n");
+
+            pInjectMouseMovementInputRequest =
+                (PINJECT_MOUSE_MOVEMENT_INPUT_REQUEST)pSystemBuffer;
+            if (!pInjectMouseMovementInputRequest)
+            {
+                ntstatus = STATUS_INVALID_PARAMETER_3;
+                goto exit;
+            }
+
+            if (sizeof(*pInjectMouseMovementInputRequest) != cbInput)
+            {
+                ntstatus = STATUS_INVALID_PARAMETER_4;
+                goto exit;
+            }
+
+            if (cbOutput)
+            {
+                ntstatus = STATUS_INVALID_PARAMETER_6;
+                goto exit;
+            }
+
+            ntstatus = MiiInjectMouseMovementInput(
+                (HANDLE)pInjectMouseMovementInputRequest->ProcessId,
+                pInjectMouseMovementInputRequest->IndicatorFlags,
+                pInjectMouseMovementInputRequest->MovementX,
+                pInjectMouseMovementInputRequest->MovementY);
+            if (!NT_SUCCESS(ntstatus))
+            {
+                ERR_PRINT("MiiInjectMouseMovementInput failed: 0x%X\n",
+                    ntstatus);
+                goto exit;
+            }
+
+            break;
+
+        case IOCTL_INJECT_MOUSE_INPUT_PACKET:
+            DBG_PRINT("Processing IOCTL_INJECT_MOUSE_INPUT_PACKET.\n");
+
+            pInjectMouseInputPacketRequest =
+                (PINJECT_MOUSE_INPUT_PACKET_REQUEST)pSystemBuffer;
+            if (!pInjectMouseInputPacketRequest)
+            {
+                ntstatus = STATUS_INVALID_PARAMETER_3;
+                goto exit;
+            }
+
+            if (sizeof(*pInjectMouseInputPacketRequest) != cbInput)
+            {
+                ntstatus = STATUS_INVALID_PARAMETER_4;
+                goto exit;
+            }
+
+            if (cbOutput)
+            {
+                ntstatus = STATUS_INVALID_PARAMETER_6;
+                goto exit;
+            }
+
+            ntstatus = MiiInjectMouseInputPacketUnsafe(
+                (HANDLE)pInjectMouseInputPacketRequest->ProcessId,
+                pInjectMouseInputPacketRequest->UseButtonDevice,
+                &pInjectMouseInputPacketRequest->InputPacket);
+            if (!NT_SUCCESS(ntstatus))
+            {
+                ERR_PRINT("MiiInjectMouseInputPacketUnsafe failed: 0x%X\n",
+                    ntstatus);
+                goto exit;
+            }
+
+            break;
+
+        default:
+            ERR_PRINT(
+                "Unhandled IOCTL."
+                " (MajorFunction = %hhu, MinorFunction = %hhu)\n",
+                pIrpStack->MajorFunction,
+                pIrpStack->MinorFunction);
+            ntstatus = STATUS_UNSUCCESSFUL;
+            goto exit;
+    }
+
+exit:
+    pIrp->IoStatus.Information = Information;
+    pIrp->IoStatus.Status = ntstatus;
+
+    IoCompleteRequest(pIrp, IO_NO_INCREMENT);
+
+    return ntstatus;
+}
