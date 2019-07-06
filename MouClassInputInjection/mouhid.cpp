@@ -170,7 +170,7 @@ Remarks:
                 driver of the attached device object.
 
             2.c Search the device extension of the MouHid device object for a
-                valid CONNECT_DATA object by interpretting each pointer-aligned
+                valid CONNECT_DATA object by interpreting each pointer-aligned
                 address as a CONNECT_DATA candidate. A candidate is valid if it
                 meets the following criteria:
 
