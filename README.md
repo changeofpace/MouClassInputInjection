@@ -34,11 +34,11 @@ There are two HID USB mouse device stacks. The **\Device\PointerClass2** device 
 
 ## Interface
 
-The [MouClass Input Injection](./blob/master/MouClassInputInjection/mouclass_input_injection.h) module defines an interface for injecting mouse button data, mouse movement data, and raw mouse input data packets in a specified process context.
+The [MouClass Input Injection](./MouClassInputInjection/mouclass_input_injection.h) module defines an interface for injecting mouse button data, mouse movement data, and raw mouse input data packets in a specified process context.
 
 ## Implementation
 
-The [MouClass Input Injection](./blob/master/MouClassInputInjection/mouclass_input_injection.cpp) module injects input by invoking a [mouse class service callback](https://docs.microsoft.com/en-us/previous-versions/ff542394(v%3Dvs.85) "MouseClassServiceCallback routine") to copy synthesized packets to the mouse class data queue in the target HID USB mouse device stack. This module uses the **MouHid Hook Manager** module from the [MouHidInputHook](https://github.com/changeofpace/MouHidInputHook "MouHidInputHook") project to dynamically resolve the connect data objects for the button device stack and the movement device stack. These objects are contained in a 'device stack context' which must be initialized before the injection interface can be used.
+The [MouClass Input Injection](./MouClassInputInjection/mouclass_input_injection.cpp) module injects input by invoking a [mouse class service callback](https://docs.microsoft.com/en-us/previous-versions/ff542394(v%3Dvs.85) "MouseClassServiceCallback routine") to copy synthesized packets to the mouse class data queue in the target HID USB mouse device stack. This module uses the **MouHid Hook Manager** module from the [MouHidInputHook](https://github.com/changeofpace/MouHidInputHook "MouHidInputHook") project to dynamically resolve the connect data objects for the button device stack and the movement device stack. These objects are contained in a 'device stack context' which must be initialized before the injection interface can be used.
 
 The MouClass Input Injection module registers a PnP notification callback for mouse device interface changes. Each mouse device interface event invalidates the device stack context. This convention ensures that synthesized packets are always injected into the correct data queues using the correct service callbacks.
 
