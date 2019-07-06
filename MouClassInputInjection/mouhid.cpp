@@ -22,6 +22,31 @@ for more information.
 //=============================================================================
 #define MODULE_TITLE    "MouHid Context"
 
+//
+// We choose a search limit by adding a small delta to the actual connect data
+//  offset. This delta accounts for the field offset changing in future
+//  versions of the MouHid driver.
+//
+// The actual offset can be found in the IOCTL_INTERNAL_MOUSE_CONNECT case of
+//  the MouHid IRP_MJ_INTERNAL_DEVICE_CONTROL handler, mouhid!MouHid_IOCTL:
+//
+//  Platform:   Windows 7 x64
+//  File:       mouhid.sys
+//  Version:    6.1.7600.16385 (win7_rtm.090713-1255)
+//  Ioctl Code: 0xF0203 (IOCTL_INTERNAL_MOUSE_CONNECT)
+//
+//  Annotated Assembly:
+//
+//      mov     rax, [rsi+_IO_STACK_LOCATION.Parameters.DeviceIoControl.Type3InputBuffer]
+//      movdqu  xmm0, xmmword ptr [rax+CONNECT_DATA.ClassDeviceObject]
+//      movdqu  xmmword ptr [r12+MOUHID_DEVICE_EXTENSION.ConnectData_B8.ClassDeviceObject], xmm0
+//
+//  Unannotated Assembly:
+//
+//      mov     rax, [rsi+20h]
+//      movdqu  xmm0, xmmword ptr [rax]
+//      movdqu  xmmword ptr [r12+0B8h], xmm0
+//
 #define DEVICE_EXTENSION_SEARCH_SIZE    0x100
 
 
