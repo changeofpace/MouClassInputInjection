@@ -76,5 +76,8 @@
     <ClInclude Include="..\Common\mouse_input_validation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\ioctl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

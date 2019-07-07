@@ -34,28 +34,28 @@ for more information.
 #define IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT \
     CTL_CODE(                                       \
         FILE_DEVICE_MOUCLASS_INPUT_INJECTION,       \
-        4600,                                       \
+        2600,                                       \
         METHOD_BUFFERED,                            \
         FILE_ANY_ACCESS)
 
 #define IOCTL_INJECT_MOUSE_BUTTON_INPUT         \
     CTL_CODE(                                   \
         FILE_DEVICE_MOUCLASS_INPUT_INJECTION,   \
-        4850,                                   \
+        2850,                                   \
         METHOD_BUFFERED,                        \
         FILE_ANY_ACCESS)
 
 #define IOCTL_INJECT_MOUSE_MOVEMENT_INPUT       \
     CTL_CODE(                                   \
         FILE_DEVICE_MOUCLASS_INPUT_INJECTION,   \
-        4851,                                   \
+        2851,                                   \
         METHOD_BUFFERED,                        \
         FILE_ANY_ACCESS)
 
 #define IOCTL_INJECT_MOUSE_INPUT_PACKET         \
     CTL_CODE(                                   \
         FILE_DEVICE_MOUCLASS_INPUT_INJECTION,   \
-        4870,                                   \
+        2870,                                   \
         METHOD_BUFFERED,                        \
         FILE_ANY_ACCESS)
 

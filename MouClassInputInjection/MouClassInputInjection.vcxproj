@@ -128,6 +128,7 @@
     <ClCompile Include="pe.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\ioctl.h" />
     <ClInclude Include="..\Common\mouse_input_validation.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="io_util.h" />
