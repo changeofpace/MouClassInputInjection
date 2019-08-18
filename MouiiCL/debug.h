@@ -11,7 +11,31 @@ for more information.
 
 #include <Windows.h>
 
+#include <crtdbg.h>
+
 #include "log.h"
+
+/*++
+
+Macro Name:
+
+    DEBUG_BREAK
+
+Macro Description:
+
+    A software breakpoint which is only executed if a user mode debugger is
+    attached to the executing process.
+
+--*/
+#if defined(_DEBUG)
+#define DEBUG_BREAK             \
+    if (IsDebuggerPresent())    \
+    {                           \
+        DebugBreak();           \
+    }
+#else
+#define DEBUG_BREAK
+#endif
 
 /*++
 
@@ -36,7 +60,7 @@ Macro Description:
 {                                                                       \
     if (!(Expression))                                                  \
     {                                                                   \
-        ERR_PRINT("\'" #Expression "\' failed: %u\n", GetLastError());  \
+        ERR_PRINT("\'" #Expression "\' failed: %u", GetLastError());    \
     }                                                                   \
 }
 #endif

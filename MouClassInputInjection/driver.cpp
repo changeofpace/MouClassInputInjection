@@ -71,7 +71,7 @@ DriverEntry(
 
     UNREFERENCED_PARAMETER(pRegistryPath);
 
-    DBG_PRINT("Loading %ls.\n", NT_DEVICE_NAME_U);
+    DBG_PRINT("Loading %ls.", NT_DEVICE_NAME_U);
 
     usDeviceName = RTL_CONSTANT_STRING(NT_DEVICE_NAME_U);
 
@@ -85,7 +85,7 @@ DriverEntry(
         &pDeviceObject);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("IoCreateDevice failed: 0x%X\n", ntstatus);
+        ERR_PRINT("IoCreateDevice failed: 0x%X", ntstatus);
         goto exit;
     }
     //
@@ -103,7 +103,7 @@ DriverEntry(
     ntstatus = IoCreateSymbolicLink(&usSymbolicLinkName, &usDeviceName);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("IoCreateSymbolicLink failed: 0x%X\n", ntstatus);
+        ERR_PRINT("IoCreateSymbolicLink failed: 0x%X", ntstatus);
         goto exit;
     }
     //
@@ -115,14 +115,14 @@ DriverEntry(
     ntstatus = MhdDriverEntry();
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MhdDriverEntry failed: 0x%X\n", ntstatus);
+        ERR_PRINT("MhdDriverEntry failed: 0x%X", ntstatus);
         goto exit;
     }
 
     ntstatus = MclDriverEntry(pDriverObject);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MclDriverEntry failed: 0x%X\n", ntstatus);
+        ERR_PRINT("MclDriverEntry failed: 0x%X", ntstatus);
         goto exit;
     }
     //
@@ -131,7 +131,7 @@ DriverEntry(
     ntstatus = MhkDriverEntry();
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MhkDriverEntry failed: 0x%X\n", ntstatus);
+        ERR_PRINT("MhkDriverEntry failed: 0x%X", ntstatus);
         goto exit;
     }
     //
@@ -140,13 +140,13 @@ DriverEntry(
     ntstatus = MiiDriverEntry();
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MiiDriverEntry failed: 0x%X\n", ntstatus);
+        ERR_PRINT("MiiDriverEntry failed: 0x%X", ntstatus);
         goto exit;
     }
     //
     fMiiLoaded = TRUE;
 
-    DBG_PRINT("%ls loaded.\n", NT_DEVICE_NAME_U);
+    DBG_PRINT("%ls loaded.", NT_DEVICE_NAME_U);
 
 exit:
     if (!NT_SUCCESS(ntstatus))
@@ -191,7 +191,7 @@ DriverUnload(
 {
     UNICODE_STRING usSymbolicLinkName = {};
 
-    DBG_PRINT("Unloading %ls.\n", NT_DEVICE_NAME_U);
+    DBG_PRINT("Unloading %ls.", NT_DEVICE_NAME_U);
 
     //
     // Unload the driver modules.
@@ -212,7 +212,7 @@ DriverUnload(
         IoDeleteDevice(pDriverObject->DeviceObject);
     }
 
-    DBG_PRINT("%ls unloaded.\n", NT_DEVICE_NAME_U);
+    DBG_PRINT("%ls unloaded.", NT_DEVICE_NAME_U);
 }
 
 
@@ -229,7 +229,7 @@ DispatchCreate(
 )
 {
     UNREFERENCED_PARAMETER(pDeviceObject);
-    DBG_PRINT("Processing IRP_MJ_CREATE.\n");
+    DBG_PRINT("Processing IRP_MJ_CREATE.");
     IoCompleteRequest(pIrp, IO_NO_INCREMENT);
     return STATUS_SUCCESS;
 }
@@ -245,7 +245,7 @@ DispatchClose(
 )
 {
     UNREFERENCED_PARAMETER(pDeviceObject);
-    DBG_PRINT("Processing IRP_MJ_CLOSE.\n");
+    DBG_PRINT("Processing IRP_MJ_CLOSE.");
     IoCompleteRequest(pIrp, IO_NO_INCREMENT);
     return STATUS_SUCCESS;
 }
@@ -279,7 +279,7 @@ DispatchDeviceControl(
     {
         case IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT:
             DBG_PRINT(
-                "Processing IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT.\n");
+                "Processing IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT.");
 
             if (cbInput)
             {
@@ -305,8 +305,7 @@ DispatchDeviceControl(
                 &pInitMouseDeviceStackContextReply->DeviceStackInformation);
             if (!NT_SUCCESS(ntstatus))
             {
-                ERR_PRINT(
-                    "MiiInitializeMouseDeviceStackContext failed: 0x%X\n",
+                ERR_PRINT("MiiInitializeMouseDeviceStackContext failed: 0x%X",
                     ntstatus);
                 goto exit;
             }
@@ -316,7 +315,7 @@ DispatchDeviceControl(
             break;
 
         case IOCTL_INJECT_MOUSE_BUTTON_INPUT:
-            DBG_PRINT("Processing IOCTL_INJECT_MOUSE_BUTTON_INPUT.\n");
+            DBG_PRINT("Processing IOCTL_INJECT_MOUSE_BUTTON_INPUT.");
 
             pInjectMouseButtonInputRequest =
                 (PINJECT_MOUSE_BUTTON_INPUT_REQUEST)pSystemBuffer;
@@ -344,15 +343,14 @@ DispatchDeviceControl(
                 pInjectMouseButtonInputRequest->ButtonData);
             if (!NT_SUCCESS(ntstatus))
             {
-                ERR_PRINT("MiiInjectMouseButtonInput failed: 0x%X\n",
-                    ntstatus);
+                ERR_PRINT("MiiInjectMouseButtonInput failed: 0x%X", ntstatus);
                 goto exit;
             }
 
             break;
 
         case IOCTL_INJECT_MOUSE_MOVEMENT_INPUT:
-            DBG_PRINT("Processing IOCTL_INJECT_MOUSE_MOVEMENT_INPUT.\n");
+            DBG_PRINT("Processing IOCTL_INJECT_MOUSE_MOVEMENT_INPUT.");
 
             pInjectMouseMovementInputRequest =
                 (PINJECT_MOUSE_MOVEMENT_INPUT_REQUEST)pSystemBuffer;
@@ -381,7 +379,7 @@ DispatchDeviceControl(
                 pInjectMouseMovementInputRequest->MovementY);
             if (!NT_SUCCESS(ntstatus))
             {
-                ERR_PRINT("MiiInjectMouseMovementInput failed: 0x%X\n",
+                ERR_PRINT("MiiInjectMouseMovementInput failed: 0x%X",
                     ntstatus);
                 goto exit;
             }
@@ -389,7 +387,7 @@ DispatchDeviceControl(
             break;
 
         case IOCTL_INJECT_MOUSE_INPUT_PACKET:
-            DBG_PRINT("Processing IOCTL_INJECT_MOUSE_INPUT_PACKET.\n");
+            DBG_PRINT("Processing IOCTL_INJECT_MOUSE_INPUT_PACKET.");
 
             pInjectMouseInputPacketRequest =
                 (PINJECT_MOUSE_INPUT_PACKET_REQUEST)pSystemBuffer;
@@ -417,7 +415,7 @@ DispatchDeviceControl(
                 &pInjectMouseInputPacketRequest->InputPacket);
             if (!NT_SUCCESS(ntstatus))
             {
-                ERR_PRINT("MiiInjectMouseInputPacketUnsafe failed: 0x%X\n",
+                ERR_PRINT("MiiInjectMouseInputPacketUnsafe failed: 0x%X",
                     ntstatus);
                 goto exit;
             }
@@ -427,7 +425,7 @@ DispatchDeviceControl(
         default:
             ERR_PRINT(
                 "Unhandled IOCTL."
-                " (MajorFunction = %hhu, MinorFunction = %hhu)\n",
+                " (MajorFunction = %hhu, MinorFunction = %hhu)",
                 pIrpStack->MajorFunction,
                 pIrpStack->MinorFunction);
             ntstatus = STATUS_UNSUCCESSFUL;

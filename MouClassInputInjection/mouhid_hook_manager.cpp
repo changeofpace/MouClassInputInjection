@@ -225,7 +225,7 @@ Remarks:
     BOOLEAN fCallbackRegistered = FALSE;
     NTSTATUS ntstatus = STATUS_SUCCESS;
 
-    DBG_PRINT("Loading %s.\n", MODULE_TITLE);
+    DBG_PRINT("Loading %s.", MODULE_TITLE);
 
     //
     // NOTE We must initialize the resource before registering the mouse
@@ -235,7 +235,7 @@ Remarks:
     ntstatus = ExInitializeResourceLite(&g_MhkManager.Resource);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("ExInitializeResourceLite failed: 0x%X\n", ntstatus);
+        ERR_PRINT("ExInitializeResourceLite failed: 0x%X", ntstatus);
         goto exit;
     }
     //
@@ -247,7 +247,7 @@ Remarks:
         &MousePnpNotificationHandle);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MclRegisterMousePnpNotificationCallback failed: 0x%X\n",
+        ERR_PRINT("MclRegisterMousePnpNotificationCallback failed: 0x%X",
             ntstatus);
         goto exit;
     }
@@ -259,7 +259,7 @@ Remarks:
     //
     g_MhkManager.MousePnpNotificationHandle = MousePnpNotificationHandle;
 
-    DBG_PRINT("%s loaded.\n", MODULE_TITLE);
+    DBG_PRINT("%s loaded.", MODULE_TITLE);
 
 exit:
     if (!NT_SUCCESS(ntstatus))
@@ -285,7 +285,7 @@ EXTERN_C
 VOID
 MhkDriverUnload()
 {
-    DBG_PRINT("Unloading %s.\n", MODULE_TITLE);
+    DBG_PRINT("Unloading %s.", MODULE_TITLE);
 
     NT_ASSERT(!g_MhkManager.HookActive);
     NT_ASSERT(!g_MhkManager.HookContext);
@@ -296,7 +296,7 @@ MhkDriverUnload()
 
     VERIFY(ExDeleteResourceLite(&g_MhkManager.Resource));
 
-    DBG_PRINT("%s unloaded.\n", MODULE_TITLE);
+    DBG_PRINT("%s unloaded.", MODULE_TITLE);
 }
 
 
@@ -352,7 +352,7 @@ Remarks:
 
     DBG_PRINT(
         "Registering MHK callbacks."
-        " (HookCallback = %p, NotificationCallback = %p, Context = %p)\n",
+        " (HookCallback = %p, NotificationCallback = %p, Context = %p)",
         pHookCallback,
         pNotificationCallback,
         pContext);
@@ -364,7 +364,7 @@ Remarks:
     //
     if (g_MhkManager.RegistrationEntry)
     {
-        ERR_PRINT("Registration limit reached.\n");
+        ERR_PRINT("Registration limit reached.");
         ntstatus = STATUS_IMPLEMENTATION_LIMIT;
         goto exit;
     }
@@ -397,12 +397,12 @@ Remarks:
         ntstatus = MhkpHookMouHidDeviceObjects(MhkpServiceCallbackHook);
         if (!NT_SUCCESS(ntstatus))
         {
-            ERR_PRINT("MhkpHookMouHidDeviceObjects failed: 0x%X\n", ntstatus);
+            ERR_PRINT("MhkpHookMouHidDeviceObjects failed: 0x%X", ntstatus);
             goto exit;
         }
     }
 
-    DBG_PRINT("MHK callbacks registered. (RegistrationHandle = %p)\n", pEntry);
+    DBG_PRINT("MHK callbacks registered. (RegistrationHandle = %p)", pEntry);
 
     //
     // Set out parameters.
@@ -443,7 +443,7 @@ MhkUnregisterCallbacks(
     ntstatus = MhkpUnregisterCallbacks(RegistrationHandle);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MhkpUnregisterCallbacks failed: 0x%X\n", ntstatus);
+        ERR_PRINT("MhkpUnregisterCallbacks failed: 0x%X", ntstatus);
         goto exit;
     }
 
@@ -476,15 +476,15 @@ MhkpMousePnpNotificationCallbackRoutine(
 #if defined(DBG)
     if (MousePnpNotificationEventArrival == Event)
     {
-        DBG_PRINT("Received mouse PnP notification. (Arrival)\n");
+        DBG_PRINT("Received mouse PnP notification. (Arrival)");
     }
     else if (MousePnpNotificationEventRemoval == Event)
     {
-        DBG_PRINT("Received mouse PnP notification. (Removal)\n");
+        DBG_PRINT("Received mouse PnP notification. (Removal)");
     }
     else
     {
-        ERR_PRINT("Received mouse PnP notification. (Unknown)\n");
+        ERR_PRINT("Received mouse PnP notification. (Unknown)");
         DEBUG_BREAK;
     }
 #else
@@ -522,7 +522,7 @@ MhkpMousePnpNotificationCallbackRoutine(
     if (pRegisteredNotificationCallback)
     {
         DBG_PRINT(
-            "Invoking MHK notification callback. (RegistrationHandle = %p)\n",
+            "Invoking MHK notification callback. (RegistrationHandle = %p)",
             RegistrationHandle);
 
         //
@@ -547,7 +547,7 @@ MhkpUnregisterCallbacks(
     PMHK_REGISTRATION_ENTRY pEntry = NULL;
     NTSTATUS ntstatus = STATUS_SUCCESS;
 
-    DBG_PRINT("Unregistering MHK callbacks. (RegistrationHandle = %p)\n",
+    DBG_PRINT("Unregistering MHK callbacks. (RegistrationHandle = %p)",
         RegistrationHandle);
 
     pEntry = (PMHK_REGISTRATION_ENTRY)RegistrationHandle;
@@ -558,7 +558,7 @@ MhkpUnregisterCallbacks(
     //
     if (pEntry != g_MhkManager.RegistrationEntry)
     {
-        ERR_PRINT("Invalid registration handle: %p\n", RegistrationHandle);
+        ERR_PRINT("Invalid registration handle: %p", RegistrationHandle);
         ntstatus = STATUS_INVALID_PARAMETER;
         goto exit;
     }
@@ -575,7 +575,7 @@ MhkpUnregisterCallbacks(
     //
     g_MhkManager.RegistrationEntry = NULL;
 
-    DBG_PRINT("MHK callbacks unregistered.\n");
+    DBG_PRINT("MHK callbacks unregistered.");
 
 exit:
     return ntstatus;
@@ -609,12 +609,12 @@ MhkpCreateHookContext(
     //
     *ppHookContext = NULL;
 
-    DBG_PRINT("Creating MouHid hook context.\n");
+    DBG_PRINT("Creating MouHid hook context.");
 
     cbConnectDataFieldOffset = MhdGetConnectDataFieldOffset();
     if (!cbConnectDataFieldOffset)
     {
-        ERR_PRINT("MhdGetConnectDataFieldOffset failed.\n");
+        ERR_PRINT("MhdGetConnectDataFieldOffset failed.");
         ntstatus = STATUS_INTERNAL_ERROR;
         goto exit;
     }
@@ -635,7 +635,7 @@ MhkpCreateHookContext(
         (PVOID*)&pDriverObject);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("ObReferenceObjectByName failed: 0x%X\n", ntstatus);
+        ERR_PRINT("ObReferenceObjectByName failed: 0x%X", ntstatus);
         goto exit;
     }
     //
@@ -650,7 +650,7 @@ MhkpCreateHookContext(
         &nDeviceObjectList);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("IouEnumerateDeviceObjectList failed: 0x%X\n", ntstatus);
+        ERR_PRINT("IouEnumerateDeviceObjectList failed: 0x%X", ntstatus);
         goto exit;
     }
 
@@ -763,20 +763,20 @@ MhkpPrintHookContext(
     ULONG i = 0;
     PMOUHID_DEVICE_OBJECT pElement = NULL;
 
-    DBG_PRINT("MouHid Hook Context:\n");
+    DBG_PRINT("MouHid Hook Context:");
 
     for (i = 0; i < pHookContext->NumberOfDeviceObjects; ++i)
     {
         pElement = &pHookContext->DeviceObjectArray[i];
 
-        DBG_PRINT("%u.\n", i);
-        DBG_PRINT("    DeviceObject:        %p\n", pElement->DeviceObject);
-        DBG_PRINT("    DeviceExtension:     %p\n",
+        DBG_PRINT("%u.", i);
+        DBG_PRINT("    DeviceObject:        %p", pElement->DeviceObject);
+        DBG_PRINT("    DeviceExtension:     %p",
             pElement->DeviceObject->DeviceExtension);
-        DBG_PRINT("    ConnectData:         %p\n", pElement->ConnectData);
-        DBG_PRINT("    ClassDeviceObject:   %p\n",
+        DBG_PRINT("    ConnectData:         %p", pElement->ConnectData);
+        DBG_PRINT("    ClassDeviceObject:   %p",
             pElement->ConnectData->ClassDeviceObject);
-        DBG_PRINT("    ClassService:        %p\n",
+        DBG_PRINT("    ClassService:        %p",
             pElement->ConnectData->ClassService);
     }
 }
@@ -794,7 +794,7 @@ MhkpInstallConnectDataHooks(
     ULONG i = 0;
     PMOUHID_DEVICE_OBJECT pElement = NULL;
 
-    DBG_PRINT("Installing connect data hooks:\n");
+    DBG_PRINT("Installing connect data hooks:");
 
     for (i = 0; i < pHookContext->NumberOfDeviceObjects; ++i)
     {
@@ -806,7 +806,7 @@ MhkpInstallConnectDataHooks(
                 pHookContext->ServiceCallbackHook);
 
         DBG_PRINT(
-            "    %u. Hooked: %p -> %p (DeviceObject = %p)\n",
+            "    %u. Hooked: %p -> %p (DeviceObject = %p)",
             i,
             pElement->ServiceCallbackOriginal,
             pElement->ConnectData->ClassService,
@@ -826,12 +826,12 @@ MhkpHookMouHidDeviceObjects(
     PMOUHID_HOOK_CONTEXT pHookContext = NULL;
     NTSTATUS ntstatus = STATUS_SUCCESS;
 
-    DBG_PRINT("Hooking MouHid device objects.\n");
+    DBG_PRINT("Hooking MouHid device objects.");
 
     ntstatus = MhkpCreateHookContext(pServiceCallbackHook, &pHookContext);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MhkpCreateHookContext failed: 0x%X\n", ntstatus);
+        ERR_PRINT("MhkpCreateHookContext failed: 0x%X", ntstatus);
         goto exit;
     }
 
@@ -873,7 +873,7 @@ MhkpUninstallConnectDataHooks(
     PMOUHID_DEVICE_OBJECT pElement = NULL;
     PVOID pExchangeResult = NULL;
 
-    DBG_PRINT("Uninstalling connect data hooks:\n");
+    DBG_PRINT("Uninstalling connect data hooks:");
 
     for (i = 0; i < pHookContext->NumberOfDeviceObjects; ++i)
     {
@@ -884,14 +884,14 @@ MhkpUninstallConnectDataHooks(
             pElement->ServiceCallbackOriginal);
         if (pExchangeResult != pHookContext->ServiceCallbackHook)
         {
-            ERR_PRINT("Unexpected ClassService: %p (DeviceObject = %p)\n",
+            ERR_PRINT("Unexpected ClassService: %p (DeviceObject = %p)",
                 pExchangeResult,
                 pElement->DeviceObject);
             DEBUG_BREAK;
         }
 
         DBG_PRINT(
-            "    %u. Unhooked: %p -> %p (DeviceObject = %p)\n",
+            "    %u. Unhooked: %p -> %p (DeviceObject = %p)",
             i,
             pExchangeResult,
             pElement->ConnectData->ClassService,
@@ -909,7 +909,7 @@ MhkpUnhookMouHidDeviceObjects()
     PMOUHID_HOOK_CONTEXT pHookContext = NULL;
     LARGE_INTEGER DelayInterval = {};
 
-    DBG_PRINT("Unhooking MouHid device objects.\n");
+    DBG_PRINT("Unhooking MouHid device objects.");
 
     pHookContext = g_MhkManager.HookContext;
 
@@ -994,7 +994,7 @@ Remarks:
     //
     if (!pServiceCallbackOriginal)
     {
-        ERR_PRINT("Unhandled class device object: %p\n", pDeviceObject);
+        ERR_PRINT("Unhandled class device object: %p", pDeviceObject);
         DEBUG_BREAK;
         goto exit;
     }

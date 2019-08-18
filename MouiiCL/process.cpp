@@ -81,7 +81,7 @@ Remarks:
         }
         else if (STATUS_INFO_LENGTH_MISMATCH != ntstatus)
         {
-            ERR_PRINT("NtQuerySystemInformation failed: 0x%X\n", ntstatus);
+            ERR_PRINT("NtQuerySystemInformation failed: 0x%X", ntstatus);
             status = FALSE;
             goto exit;
         }
@@ -89,7 +89,7 @@ Remarks:
         status = HeapFree(GetProcessHeap(), 0, pSystemProcessInfo);
         if (!status)
         {
-            ERR_PRINT("HeapFree failed: %u\n", GetLastError());
+            ERR_PRINT("HeapFree failed: %u", GetLastError());
             goto exit;
         }
     }
@@ -105,7 +105,7 @@ Remarks:
         TRUE);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("RtlAnsiStringToUnicodeString failed: 0x%X\n", ntstatus);
+        ERR_PRINT("RtlAnsiStringToUnicodeString failed: 0x%X", ntstatus);
         status = FALSE;
         goto exit;
     }

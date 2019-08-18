@@ -9,10 +9,6 @@ for more information.
 
 #include "object_util.h"
 
-#define NTSTRSAFE_NO_CB_FUNCTIONS
-
-#include <ntstrsafe.h>
-
 #include "log.h"
 #include "nt.h"
 
@@ -58,7 +54,7 @@ Remarks:
     ntstatus = ObQueryNameString(pObject, NULL, 0, &cbReturnLength);
     if (STATUS_INFO_LENGTH_MISMATCH != ntstatus)
     {
-        ERR_PRINT("ObQueryNameString failed: 0x%X (Unexpected)\n", ntstatus);
+        ERR_PRINT("ObQueryNameString failed: 0x%X (Unexpected)", ntstatus);
         ntstatus = STATUS_UNSUCCESSFUL;
         goto exit;
     }
@@ -81,7 +77,7 @@ Remarks:
         &cbReturnLength);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("ObQueryNameString failed: 0x%X\n", ntstatus);
+        ERR_PRINT("ObQueryNameString failed: 0x%X", ntstatus);
         goto exit;
     }
 

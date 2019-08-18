@@ -25,8 +25,8 @@ static
 VOID
 PrintProgramBanner()
 {
-    INF_PRINT("Type 'help' for a list of commands.\n");
-    INF_PRINT("\n");
+    INF_PRINT("Type 'help' for a list of commands.");
+    INF_PRINT("");
 }
 
 
@@ -90,8 +90,7 @@ ProcessCommands()
         }
         else
         {
-            ERR_PRINT(
-                "Invalid command. Type 'help' for a list of commands.\n");
+            ERR_PRINT("Invalid command. Type 'help' for a list of commands.");
         }
 
         //
@@ -115,9 +114,16 @@ main(
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(argv);
 
+    if (!LogInitialization(LOG_CONFIG_STDOUT))
+    {
+        ERR_PRINT("LogInitialization failed: %u", GetLastError());
+        mainstatus = EXIT_FAILURE;
+        goto exit;
+    }
+
     if (!DrvInitialization())
     {
-        ERR_PRINT("DrvInitialization failed: %u\n", GetLastError());
+        ERR_PRINT("DrvInitialization failed: %u", GetLastError());
         mainstatus = EXIT_FAILURE;
         goto exit;
     }
@@ -126,7 +132,7 @@ main(
 
     if (!MouInitializeDeviceStackContext(NULL))
     {
-        ERR_PRINT("MouInitializeDeviceStackContext failed: %u\n",
+        ERR_PRINT("MouInitializeDeviceStackContext failed: %u",
             GetLastError());
         mainstatus = EXIT_FAILURE;
         goto exit;
@@ -139,7 +145,7 @@ main(
 exit:
     if (fDriverInitialized)
     {
-        VERIFY(DrvTermination());
+        DrvTermination();
     }
 
     return mainstatus;

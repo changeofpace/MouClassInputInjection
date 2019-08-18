@@ -69,7 +69,7 @@ Remarks:
     NTSTATUS Verify_NtStatus_ = (NtExpression);                             \
     if (!NT_SUCCESS(Verify_NtStatus_))                                      \
     {                                                                       \
-        ERR_PRINT("\'" #NtExpression "\' failed: 0x%X\n", Verify_NtStatus_);\
+        ERR_PRINT("\'" #NtExpression "\' failed: 0x%X", Verify_NtStatus_);  \
     }                                                                       \
 }
 #endif

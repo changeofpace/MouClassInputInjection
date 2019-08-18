@@ -27,14 +27,15 @@ for more information.
 
 
 //=============================================================================
-// Private Interface
+// Public Interface
 //=============================================================================
 _Use_decl_annotations_
 EXTERN_C
 NTSTATUS
-LogpPrint(
-    LOG_LEVEL LogLevel,
-    PCSTR pszFormat,
+LogPrint(
+    LOG_LEVEL Level,
+    ULONG Options,
+    PCHAR pszFormat,
     ...
 )
 {
@@ -45,13 +46,14 @@ LogpPrint(
     CHAR szTimeBuffer[TIME_BUFFER_CCH_MAX] = {};
     va_list VarArgs = {};
     CHAR szMessageBuffer[MESSAGE_BUFFER_CCH_MAX] = {};
+    PCHAR pszOutputFormat = NULL;
     CHAR szOutputBuffer[OUTPUT_BUFFER_CCH_MAX] = {};
     NTSTATUS ntstatus = STATUS_SUCCESS;
 
     //
     // Set the log level prefix.
     //
-    switch (LogLevel)
+    switch (Level)
     {
         case LogLevelDebug:     pszLogLevel = "DBG"; break;
         case LogLevelInfo:      pszLogLevel = "INF"; break;
@@ -97,10 +99,19 @@ LogpPrint(
         goto exit;
     }
 
+    if (LOG_OPTION_APPEND_CRLF & Options)
+    {
+        pszOutputFormat = "%s  %s  %04Iu:%04Iu  %-15s  %s\r\n";
+    }
+    else
+    {
+        pszOutputFormat = "%s  %s  %04Iu:%04Iu  %-15s  %s";
+    }
+
     ntstatus = RtlStringCchPrintfA(
         szOutputBuffer,
         RTL_NUMBER_OF(szOutputBuffer),
-        "%s  %s  %04Iu:%04Iu  %-15s  %s",
+        pszOutputFormat,
         szTimeBuffer,
         pszLogLevel,
         (ULONG_PTR)PsGetProcessId(PsGetCurrentProcess()),

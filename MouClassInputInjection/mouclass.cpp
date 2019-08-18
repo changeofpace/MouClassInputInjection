@@ -106,7 +106,7 @@ Remarks:
     BOOLEAN fResourceInitialized = FALSE;
     NTSTATUS ntstatus = STATUS_SUCCESS;
 
-    DBG_PRINT("Loading %s.\n", MODULE_TITLE);
+    DBG_PRINT("Loading %s.", MODULE_TITLE);
 
 #if defined(DBG)
     VERIFY(MclPrintMouClassDeviceObjects());
@@ -125,7 +125,7 @@ Remarks:
         &PnpNotificationHandle);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("IoRegisterPlugPlayNotification failed: 0x%X\n", ntstatus);
+        ERR_PRINT("IoRegisterPlugPlayNotification failed: 0x%X", ntstatus);
         goto exit;
     }
     //
@@ -134,7 +134,7 @@ Remarks:
     ntstatus = ExInitializeResourceLite(&g_MclManager.Resource);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("ExInitializeResourceLite failed: 0x%X\n", ntstatus);
+        ERR_PRINT("ExInitializeResourceLite failed: 0x%X", ntstatus);
         goto exit;
     }
     //
@@ -146,7 +146,7 @@ Remarks:
     g_MclManager.PnpNotificationHandle = PnpNotificationHandle;
     InitializeListHead(&g_MclManager.RegisteredCallbackListHead);
 
-    DBG_PRINT("%s loaded.\n", MODULE_TITLE);
+    DBG_PRINT("%s loaded.", MODULE_TITLE);
 
 exit:
     if (!NT_SUCCESS(ntstatus))
@@ -171,7 +171,7 @@ EXTERN_C
 VOID
 MclDriverUnload()
 {
-    DBG_PRINT("Unloading %s.\n", MODULE_TITLE);
+    DBG_PRINT("Unloading %s.", MODULE_TITLE);
 
     NT_ASSERT(IsListEmpty(&g_MclManager.RegisteredCallbackListHead));
 
@@ -180,7 +180,7 @@ MclDriverUnload()
 
     VERIFY(ExDeleteResourceLite(&g_MclManager.Resource));
 
-    DBG_PRINT("%s unloaded.\n", MODULE_TITLE);
+    DBG_PRINT("%s unloaded.", MODULE_TITLE);
 }
 
 
@@ -256,7 +256,7 @@ Remarks:
 
     DBG_PRINT(
         "Registered mouse PnP notification callback."
-        " (Callback = %p, Context = %p, RegistrationHandle = %p)\n",
+        " (Callback = %p, Context = %p, RegistrationHandle = %p)",
         pCallback,
         pContext,
         pEntry);
@@ -292,7 +292,7 @@ MclUnregisterMousePnpNotificationCallback(
 
     DBG_PRINT(
         "Unregistered mouse PnP notification callback."
-        " (RegistrationHandle = %p)\n",
+        " (RegistrationHandle = %p)",
         RegistrationHandle);
 }
 
@@ -309,7 +309,7 @@ MclPrintInputPacket(
 {
     INF_PRINT(
         "Mouse Packet %I64u: SC=%p DO=%p ID=%hu IF=0x%03hX BF=0x%03hX"
-        " BD=0x%04hX RB=0x%X EX=0x%X LX=%d LY=%d\n",
+        " BD=0x%04hX RB=0x%X EX=0x%X LX=%d LY=%d",
         PacketId,
         pServiceCallback,
         pDeviceObject,
@@ -355,7 +355,7 @@ MclpPnpNotificationCallbackRoutine(
 
         nEvents = InterlockedIncrement64(&pContext->ArrivalEvents);
 
-        DBG_PRINT("Device interface arrival (%I64u): %wZ\n",
+        DBG_PRINT("Device interface arrival (%I64u): %wZ",
             nEvents,
             pNotification->SymbolicLinkName);
     }
@@ -365,7 +365,7 @@ MclpPnpNotificationCallbackRoutine(
 
         nEvents = InterlockedIncrement64(&pContext->RemovalEvents);
 
-        DBG_PRINT("Device interface removal (%I64u): %wZ\n",
+        DBG_PRINT("Device interface removal (%I64u): %wZ",
             nEvents,
             pNotification->SymbolicLinkName);
     }
@@ -373,7 +373,7 @@ MclpPnpNotificationCallbackRoutine(
     {
         ERR_PRINT(
             "Unexpected device interface change GUID."
-            " (SymbolicLinkName = %wZ)\n",
+            " (SymbolicLinkName = %wZ)",
             pNotification->SymbolicLinkName);
         DEBUG_BREAK;
         goto exit;
@@ -435,7 +435,7 @@ MclPrintMouClassDeviceObjects()
         (PVOID*)&pDriverObject);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("ObReferenceObjectByName failed: 0x%X\n", ntstatus);
+        ERR_PRINT("ObReferenceObjectByName failed: 0x%X", ntstatus);
         goto exit;
     }
     //
@@ -450,7 +450,7 @@ MclPrintMouClassDeviceObjects()
         &nDeviceObjectList);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("IouEnumerateDeviceObjectList failed: 0x%X\n", ntstatus);
+        ERR_PRINT("IouEnumerateDeviceObjectList failed: 0x%X", ntstatus);
         goto exit;
     }
 

@@ -90,7 +90,7 @@ Remarks:
         }
         else if (STATUS_BUFFER_TOO_SMALL != ntstatus)
         {
-            ERR_PRINT("IoEnumerateDeviceObjectList failed: 0x%X\n", ntstatus);
+            ERR_PRINT("IoEnumerateDeviceObjectList failed: 0x%X", ntstatus);
             nDeviceObjectList = NumberOfElements;
             goto exit;
         }
@@ -201,27 +201,27 @@ IouPrintDeviceObjectList(
     POBJECT_NAME_INFORMATION pObjectNameInfo = NULL;
     NTSTATUS ntstatus = STATUS_SUCCESS;
 
-    DBG_PRINT("Device Object List (DriverName = %ls):\n", pwzDriverName);
+    DBG_PRINT("Device Object List (DriverName = %ls):", pwzDriverName);
 
     for (ULONG i = 0; i < nDeviceObjectList; ++i)
     {
         ntstatus = ObuQueryNameString(ppDeviceObjectList[i], &pObjectNameInfo);
         if (!NT_SUCCESS(ntstatus))
         {
-            ERR_PRINT("ObuQueryNameString failed: 0x%X (%u)\n", ntstatus, i);
+            ERR_PRINT("ObuQueryNameString failed: 0x%X (%u)", ntstatus, i);
             continue;
         }
 
         if (pObjectNameInfo->Name.Buffer)
         {
-            DBG_PRINT("    %u: DeviceObject = %p, Name = %wZ\n",
+            DBG_PRINT("    %u: DeviceObject = %p, Name = %wZ",
                 i,
                 ppDeviceObjectList[i],
                 pObjectNameInfo->Name);
         }
         else
         {
-            DBG_PRINT("    %u: DeviceObject = %p, Name = (unnamed)\n",
+            DBG_PRINT("    %u: DeviceObject = %p, Name = (unnamed)",
                 i,
                 ppDeviceObjectList[i]);
         }

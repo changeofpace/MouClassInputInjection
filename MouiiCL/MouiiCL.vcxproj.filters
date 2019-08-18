@@ -32,6 +32,9 @@
     <ClCompile Include="process.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="driver.h">

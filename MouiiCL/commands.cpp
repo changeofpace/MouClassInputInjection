@@ -74,22 +74,22 @@ _Use_decl_annotations_
 BOOL
 CmdDisplayCommands()
 {
-    INF_PRINT("Commands:\n");
-    INF_PRINT("    %-10s  %s\n", CMD_HELP, CMD_INFO_HELP);
-    INF_PRINT("    %-10s  %s\n", CMD_EXIT_CLIENT, CMD_INFO_EXIT_CLIENT);
-    INF_PRINT("    %-10s  %s\n",
+    INF_PRINT("Commands:");
+    INF_PRINT("    %-10s  %s", CMD_HELP, CMD_INFO_HELP);
+    INF_PRINT("    %-10s  %s", CMD_EXIT_CLIENT, CMD_INFO_EXIT_CLIENT);
+    INF_PRINT("    %-10s  %s",
         CMD_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT,
         CMD_INFO_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT);
-    INF_PRINT("    %-10s  %s\n",
+    INF_PRINT("    %-10s  %s",
         CMD_LOOKUP_PROCESS_ID_BY_NAME,
         CMD_INFO_LOOKUP_PROCESS_ID_BY_NAME);
-    INF_PRINT("    %-10s  %s\n",
+    INF_PRINT("    %-10s  %s",
         CMD_INJECT_MOUSE_BUTTON_INPUT,
         CMD_INFO_INJECT_MOUSE_BUTTON_INPUT);
-    INF_PRINT("    %-10s  %s\n",
+    INF_PRINT("    %-10s  %s",
         CMD_INJECT_MOUSE_MOVEMENT_INPUT,
         CMD_INFO_INJECT_MOUSE_MOVEMENT_INPUT);
-    INF_PRINT("    %-10s  %s\n",
+    INF_PRINT("    %-10s  %s",
         CMD_INJECT_MOUSE_BUTTON_CLICK,
         CMD_INFO_INJECT_MOUSE_BUTTON_CLICK);
 
@@ -106,7 +106,8 @@ R"(Usage:
 Description:
     Initializes the mouse device stack context required by the kernel input
     injection interface. This command must be invoked and succeed before the
-    input injection commands can be used.)";
+    input injection commands can be used.
+)";
 
 _Use_decl_annotations_
 BOOL
@@ -119,7 +120,7 @@ CmdInitializeMouseDeviceStackContext(
 
     if (ARGC_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT != Arguments.size())
     {
-        INF_PRINT("%s\n", g_pszUsageInitializeMouseDeviceStackContext);
+        LogPrintDirect(g_pszUsageInitializeMouseDeviceStackContext);
         SetLastError(ERROR_INVALID_PARAMETER);
         status = FALSE;
         goto exit;
@@ -127,7 +128,7 @@ CmdInitializeMouseDeviceStackContext(
 
     if (CMD_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT != Arguments[0])
     {
-        INF_PRINT("Unexpected command: %s\n", Arguments[0].c_str());
+        INF_PRINT("Unexpected command: %s", Arguments[0].c_str());
         SetLastError(ERROR_INVALID_PARAMETER);
         status = FALSE;
         goto exit;
@@ -136,22 +137,22 @@ CmdInitializeMouseDeviceStackContext(
     status = MouInitializeDeviceStackContext(&DeviceStackInformation);
     if (!status)
     {
-        ERR_PRINT("MouInitializeDeviceStackContext failed: %u\n",
+        ERR_PRINT("MouInitializeDeviceStackContext failed: %u",
             GetLastError());
         goto exit;
     }
 
-    INF_PRINT("Mouse Device Stack Information:\n");
-    INF_PRINT("    Button Device\n");
-    INF_PRINT("        UnitId:              %hu\n",
+    INF_PRINT("Mouse Device Stack Information:");
+    INF_PRINT("    Button Device");
+    INF_PRINT("        UnitId:              %hu",
         DeviceStackInformation.ButtonDevice.UnitId);
-    INF_PRINT("    Movement Device\n");
-    INF_PRINT("        UnitId:              %hu\n",
+    INF_PRINT("    Movement Device");
+    INF_PRINT("        UnitId:              %hu",
         DeviceStackInformation.MovementDevice.UnitId);
-    INF_PRINT("        AbsoluteMovement:    %s\n",
+    INF_PRINT("        AbsoluteMovement:    %s",
         DeviceStackInformation.MovementDevice.AbsoluteMovement ?
             "TRUE" : "FALSE");
-    INF_PRINT("        VirtualDesktop:      %s\n",
+    INF_PRINT("        VirtualDesktop:      %s",
         DeviceStackInformation.MovementDevice.VirtualDesktop ?
             "TRUE" : "FALSE");
 
@@ -173,7 +174,8 @@ Parameters:
     process_name - The target process name including file extension.
 
 Example:
-    pid calc.exe)";
+    pid calc.exe
+)";
 
 _Use_decl_annotations_
 BOOL
@@ -187,7 +189,7 @@ CmdLookupProcessIdByName(
 
     if (ARGC_LOOKUP_PROCESS_ID_BY_NAME != Arguments.size())
     {
-        INF_PRINT("%s\n", g_pszUsageLookupProcessIdByName);
+        LogPrintDirect(g_pszUsageLookupProcessIdByName);
         SetLastError(ERROR_INVALID_PARAMETER);
         status = FALSE;
         goto exit;
@@ -195,7 +197,7 @@ CmdLookupProcessIdByName(
 
     if (CMD_LOOKUP_PROCESS_ID_BY_NAME != Arguments[0])
     {
-        INF_PRINT("Unexpected command: %s\n", Arguments[0].c_str());
+        INF_PRINT("Unexpected command: %s", Arguments[0].c_str());
         SetLastError(ERROR_INVALID_PARAMETER);
         status = FALSE;
         goto exit;
@@ -211,7 +213,7 @@ CmdLookupProcessIdByName(
 
     if (!ProcessIds.size())
     {
-        ERR_PRINT("There are no active processes with the specified name.\n");
+        ERR_PRINT("There are no active processes with the specified name.");
         SetLastError(ERROR_INVALID_NAME);
         status = FALSE;
         goto exit;
@@ -219,7 +221,7 @@ CmdLookupProcessIdByName(
 
     for (SIZE_T i = 0; i < ProcessIds.size(); ++i)
     {
-        INF_PRINT("    %Iu  0x%IX\n", ProcessIds[i], ProcessIds[i]);
+        INF_PRINT("    %Iu  0x%IX", ProcessIds[i], ProcessIds[i]);
     }
 
 exit:
@@ -264,7 +266,8 @@ Example:
     The following command injects a middle mouse button press into the process
     whose process id is 1234:
 
-        button 1234 0x10 0)";
+        button 1234 0x10 0
+)";
 
 _Use_decl_annotations_
 BOOL
@@ -279,7 +282,7 @@ CmdInjectMouseButtonInput(
 
     if (ARGC_INJECT_MOUSE_BUTTON_INPUT != Arguments.size())
     {
-        INF_PRINT("%s\n", g_pszUsageInjectMouseButtonInput);
+        LogPrintDirect(g_pszUsageInjectMouseButtonInput);
         SetLastError(ERROR_INVALID_PARAMETER);
         status = FALSE;
         goto exit;
@@ -287,7 +290,7 @@ CmdInjectMouseButtonInput(
 
     if (CMD_INJECT_MOUSE_BUTTON_INPUT != Arguments[0])
     {
-        INF_PRINT("Unexpected command: %s\n", Arguments[0].c_str());
+        INF_PRINT("Unexpected command: %s", Arguments[0].c_str());
         SetLastError(ERROR_INVALID_PARAMETER);
         status = FALSE;
         goto exit;
@@ -302,14 +305,14 @@ CmdInjectMouseButtonInput(
     status = StrUnsignedShortFromString(Arguments[2], TRUE, &ButtonFlags);
     if (!status)
     {
-        ERR_PRINT("Invalid button flag: %s\n", Arguments[2].c_str());
+        ERR_PRINT("Invalid button flag: %s", Arguments[2].c_str());
         goto exit;
     }
 
     status = StrUnsignedShortFromString(Arguments[3], TRUE, &ButtonData);
     if (!status)
     {
-        ERR_PRINT("Invalid button data: %s\n", Arguments[3].c_str());
+        ERR_PRINT("Invalid button data: %s", Arguments[3].c_str());
         goto exit;
     }
 
@@ -361,7 +364,8 @@ Example:
     The following command injects a movement packet which moves the mouse left
     by 3 relative units and up by 10 relative units:
 
-        move 1234 0 -3 10)";
+        move 1234 0 -3 10
+)";
 
 _Use_decl_annotations_
 BOOL
@@ -377,7 +381,7 @@ CmdInjectMouseMovementInput(
 
     if (ARGC_INJECT_MOUSE_MOVEMENT_INPUT != Arguments.size())
     {
-        INF_PRINT("%s\n", g_pszUsageInjectMouseMovementInput);
+        LogPrintDirect(g_pszUsageInjectMouseMovementInput);
         SetLastError(ERROR_INVALID_PARAMETER);
         status = FALSE;
         goto exit;
@@ -385,7 +389,7 @@ CmdInjectMouseMovementInput(
 
     if (CMD_INJECT_MOUSE_MOVEMENT_INPUT != Arguments[0])
     {
-        INF_PRINT("Unexpected command: %s\n", Arguments[0].c_str());
+        INF_PRINT("Unexpected command: %s", Arguments[0].c_str());
         SetLastError(ERROR_INVALID_PARAMETER);
         status = FALSE;
         goto exit;
@@ -400,21 +404,21 @@ CmdInjectMouseMovementInput(
     status = StrUnsignedShortFromString(Arguments[2], TRUE, &IndicatorFlags);
     if (!status)
     {
-        ERR_PRINT("Invalid indicator flags: %s\n", Arguments[2].c_str());
+        ERR_PRINT("Invalid indicator flags: %s", Arguments[2].c_str());
         goto exit;
     }
 
     status = StrLongFromString(Arguments[3], FALSE, &MovementX);
     if (!status)
     {
-        ERR_PRINT("Invalid x: %s\n", Arguments[3].c_str());
+        ERR_PRINT("Invalid x: %s", Arguments[3].c_str());
         goto exit;
     }
 
     status = StrLongFromString(Arguments[4], FALSE, &MovementY);
     if (!status)
     {
-        ERR_PRINT("Invalid y: %s\n", Arguments[4].c_str());
+        ERR_PRINT("Invalid y: %s", Arguments[4].c_str());
         goto exit;
     }
 
@@ -467,7 +471,8 @@ Example:
     The following command injects a left mouse button click where the button is
     activated (i.e., held down) for approximately 777 milliseconds.
 
-        click 1234 0x1 777)";
+        click 1234 0x1 777
+)";
 
 _Use_decl_annotations_
 BOOL
@@ -482,7 +487,7 @@ CmdInjectMouseButtonClick(
 
     if (ARGC_INJECT_MOUSE_BUTTON_CLICK != Arguments.size())
     {
-        INF_PRINT("%s\n", g_pszUsageInjectMouseButtonClick);
+        LogPrintDirect(g_pszUsageInjectMouseButtonClick);
         SetLastError(ERROR_INVALID_PARAMETER);
         status = FALSE;
         goto exit;
@@ -490,7 +495,7 @@ CmdInjectMouseButtonClick(
 
     if (CMD_INJECT_MOUSE_BUTTON_CLICK != Arguments[0])
     {
-        INF_PRINT("Unexpected command: %s\n", Arguments[0].c_str());
+        INF_PRINT("Unexpected command: %s", Arguments[0].c_str());
         SetLastError(ERROR_INVALID_PARAMETER);
         status = FALSE;
         goto exit;
@@ -505,7 +510,7 @@ CmdInjectMouseButtonClick(
     status = StrUnsignedShortFromString(Arguments[2], TRUE, &Button);
     if (!status)
     {
-        ERR_PRINT("Invalid button flag: %s\n", Arguments[2].c_str());
+        ERR_PRINT("Invalid button flag: %s", Arguments[2].c_str());
         goto exit;
     }
 
@@ -515,7 +520,7 @@ CmdInjectMouseButtonClick(
         &DurationInMilliseconds);
     if (!status)
     {
-        ERR_PRINT("Invalid duration: %s\n", Arguments[3].c_str());
+        ERR_PRINT("Invalid duration: %s", Arguments[3].c_str());
         goto exit;
     }
 
@@ -546,6 +551,6 @@ CmdpPrintDeviceReinitializationMessage()
         "The mouse device stack context for the driver is not initialized"
         " or a change in the HID USB mouse device stack(s) has invalidated the"
         " previous context. Execute the '%s' command to initialize a new"
-        " device stack context.\n",
+        " device stack context.",
         CMD_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT);
 }

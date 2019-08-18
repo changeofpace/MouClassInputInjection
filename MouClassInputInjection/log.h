@@ -12,35 +12,36 @@ for more information.
 #include <fltKernel.h>
 
 //=============================================================================
+// Constants
+//=============================================================================
+#define LOG_OPTION_APPEND_CRLF          0x00000001
+
+//=============================================================================
 // Enumerations
 //=============================================================================
-typedef enum _LOG_LEVEL
-{
+typedef enum _LOG_LEVEL {
     LogLevelDebug,
     LogLevelInfo,
     LogLevelWarning,
     LogLevelError,
-
 } LOG_LEVEL, *PLOG_LEVEL;
-
-//=============================================================================
-// Private Interface
-//=============================================================================
-_IRQL_requires_same_
-EXTERN_C
-NTSTATUS
-LogpPrint(
-    _In_ LOG_LEVEL LogLevel,
-    _In_z_ _Printf_format_string_ PCSTR pszFormat,
-    ...
-);
 
 //=============================================================================
 // Public Interface
 //=============================================================================
+_IRQL_requires_same_
+EXTERN_C
+NTSTATUS
+LogPrint(
+    _In_ LOG_LEVEL Level,
+    _In_ ULONG Options,
+    _In_z_ _Printf_format_string_ PCHAR pszFormat,
+    ...
+);
+
 #if defined(DBG)
 #define DBG_PRINT(Format, ...) \
-    (LogpPrint(LogLevelDebug, (Format), __VA_ARGS__))
+    LogPrint(LogLevelDebug, LOG_OPTION_APPEND_CRLF, (Format), __VA_ARGS__)
 #else
 //
 // Debug level messages are disabled in release builds.
@@ -48,8 +49,15 @@ LogpPrint(
 #define DBG_PRINT(Format, ...)
 #endif
 
-#define INF_PRINT(Format, ...) (LogpPrint(LogLevelInfo, (Format), __VA_ARGS__))
-#define WRN_PRINT(Format, ...) \
-    (LogpPrint(LogLevelWarning, (Format), __VA_ARGS__))
+#define INF_PRINT(Format, ...) \
+    LogPrint(LogLevelInfo, LOG_OPTION_APPEND_CRLF, (Format), __VA_ARGS__)
+
+#define WRN_PRINT(Format, ...)  \
+    LogPrint(                   \
+        LogLevelWarning,        \
+        LOG_OPTION_APPEND_CRLF, \
+        (Format),               \
+        __VA_ARGS__)
+
 #define ERR_PRINT(Format, ...) \
-    (LogpPrint(LogLevelError, (Format), __VA_ARGS__))
+    LogPrint(LogLevelError, LOG_OPTION_APPEND_CRLF, (Format), __VA_ARGS__)

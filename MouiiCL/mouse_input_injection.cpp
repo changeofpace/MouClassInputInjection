@@ -59,14 +59,13 @@ Remarks:
             sizeof(*pDeviceStackInformation));
     }
 
-    INF_PRINT("Initializing the mouse device stack context for the driver.\n");
-    INF_PRINT(
-        "Waiting for user to provide mouse button and movement input.\n");
+    INF_PRINT("Initializing the mouse device stack context for the driver.");
+    INF_PRINT("Waiting for user to provide mouse button and movement input.");
 
     status = DrvInitializeMouseDeviceStackContext(&DeviceStackInformation);
     if (!status)
     {
-        ERR_PRINT("DrvInitializeMouseDeviceStackContext failed: %u\n",
+        ERR_PRINT("DrvInitializeMouseDeviceStackContext failed: %u",
             GetLastError());
         goto exit;
     }
@@ -126,14 +125,14 @@ Remarks:
     status = MivValidateButtonInput(ButtonFlags, ButtonData);
     if (!status)
     {
-        ERR_PRINT("MivValidateButtonInput failed.\n");
+        ERR_PRINT("MivValidateButtonInput failed.");
         goto exit;
     }
 
     status = DrvInjectMouseButtonInput(ProcessId, ButtonFlags, ButtonData);
     if (!status)
     {
-        ERR_PRINT("DrvInjectMouseButtonInput failed: %u\n", GetLastError());
+        ERR_PRINT("DrvInjectMouseButtonInput failed: %u", GetLastError());
         goto exit;
     }
 
@@ -184,7 +183,7 @@ Remarks:
     status = MivValidateMovementInput(IndicatorFlags, MovementX, MovementY);
     if (!status)
     {
-        ERR_PRINT("MivValidateMovementInput failed.\n");
+        ERR_PRINT("MivValidateMovementInput failed.");
         goto exit;
     }
 
@@ -195,7 +194,7 @@ Remarks:
         MovementY);
     if (!status)
     {
-        ERR_PRINT("DrvInjectMouseMovementInput failed: %u\n", GetLastError());
+        ERR_PRINT("DrvInjectMouseMovementInput failed: %u", GetLastError());
         goto exit;
     }
 
@@ -258,7 +257,7 @@ Remarks:
     //
     if (INFINITE == ReleaseDelayInMilliseconds)
     {
-        ERR_PRINT("Invalid release delay.\n");
+        ERR_PRINT("Invalid release delay.");
         SetLastError(ERROR_INVALID_PARAMETER);
         status = FALSE;
         goto exit;
@@ -290,7 +289,7 @@ Remarks:
             break;
 
         default:
-            ERR_PRINT("Unexpected Button: 0x%hX\n", Button);
+            ERR_PRINT("Unexpected Button: 0x%hX", Button);
             status = FALSE;
             goto exit;
     }
@@ -302,14 +301,14 @@ Remarks:
     status = DrvInjectMouseButtonInput(ProcessId, Button, 0);
     if (!status)
     {
-        ERR_PRINT("DrvInjectMouseButtonInput failed: %u\n", GetLastError());
+        ERR_PRINT("DrvInjectMouseButtonInput failed: %u", GetLastError());
         goto exit;
     }
 
     ntstatus = NtDelayExecution(FALSE, &DelayInterval);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("NtDelayExecution failed: 0x%X\n", ntstatus);
+        ERR_PRINT("NtDelayExecution failed: 0x%X", ntstatus);
         status = FALSE;
         goto exit;
     }
@@ -317,7 +316,7 @@ Remarks:
     status = DrvInjectMouseButtonInput(ProcessId, ReleaseButton, 0);
     if (!status)
     {
-        ERR_PRINT("DrvInjectMouseButtonInput failed: %u\n", GetLastError());
+        ERR_PRINT("DrvInjectMouseButtonInput failed: %u", GetLastError());
         goto exit;
     }
 
@@ -369,7 +368,7 @@ Remarks:
         pInputPacket);
     if (!status)
     {
-        ERR_PRINT("DrvInjectMouseInputPacket failed: %u\n", GetLastError());
+        ERR_PRINT("DrvInjectMouseInputPacket failed: %u", GetLastError());
         goto exit;
     }
 

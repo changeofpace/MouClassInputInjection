@@ -117,12 +117,12 @@ Required Modules:
     SIZE_T cbConnectDataFieldOffset = 0;
     NTSTATUS ntstatus = STATUS_SUCCESS;
 
-    DBG_PRINT("Loading %s.\n", MODULE_TITLE);
+    DBG_PRINT("Loading %s.", MODULE_TITLE);
 
     ntstatus = MhdpResolveConnectDataFieldOffset(&cbConnectDataFieldOffset);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MhdpResolveConnectDataFieldOffset failed: 0x%X\n",
+        ERR_PRINT("MhdpResolveConnectDataFieldOffset failed: 0x%X",
             ntstatus);
         goto exit;
     }
@@ -132,8 +132,8 @@ Required Modules:
     //
     g_MhdContext.ConnectDataFieldOffset = cbConnectDataFieldOffset;
 
-    DBG_PRINT("%s loaded:\n", MODULE_TITLE);
-    DBG_PRINT("    ConnectDataFieldOffset:      0x%IX\n",
+    DBG_PRINT("%s loaded:", MODULE_TITLE);
+    DBG_PRINT("    ConnectDataFieldOffset:      0x%IX",
         g_MhdContext.ConnectDataFieldOffset);
 
 exit:
@@ -232,7 +232,7 @@ Remarks:
 
     DBG_PRINT(
         "Resolving MouHid connect data field offset for device."
-        " (DeviceObject = %p)\n",
+        " (DeviceObject = %p)",
         pDeviceObject);
 
     //
@@ -242,7 +242,7 @@ Remarks:
     pAttachedDevice = IouGetUpperDeviceObject(pDeviceObject);
     if (!pAttachedDevice)
     {
-        ERR_PRINT("Unexpected AttachedDevice. (DeviceObject = %p)\n",
+        ERR_PRINT("Unexpected AttachedDevice. (DeviceObject = %p)",
             pDeviceObject);
         ntstatus = STATUS_UNSUCCESSFUL;
         goto exit;
@@ -254,7 +254,7 @@ Remarks:
     pDriverStart = pAttachedDevice->DriverObject->DriverStart;
     if (!pDriverStart)
     {
-        ERR_PRINT("Unexpected DriverStart. (DriverObject = %p)\n",
+        ERR_PRINT("Unexpected DriverStart. (DriverObject = %p)",
             pAttachedDevice->DriverObject);
         ntstatus = STATUS_UNSUCCESSFUL;
         goto exit;
@@ -262,7 +262,7 @@ Remarks:
 
     if (!RtlPcToFileHeader(pDriverStart, (PVOID*)&ImageBase))
     {
-        ERR_PRINT("RtlPcToFileHeader failed. (PcValue = %p)\n", pDriverStart);
+        ERR_PRINT("RtlPcToFileHeader failed. (PcValue = %p)", pDriverStart);
         ntstatus = STATUS_UNSUCCESSFUL;
         goto exit;
     }
@@ -273,7 +273,7 @@ Remarks:
         &nExecutableSections);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("PeGetExecutableSections failed: 0x%X\n", ntstatus);
+        ERR_PRINT("PeGetExecutableSections failed: 0x%X", ntstatus);
         goto exit;
     }
 
@@ -340,7 +340,7 @@ Remarks:
         //
         if (cbConnectDataFieldOffset)
         {
-            ERR_PRINT("Found multiple field offset candidates.\n");
+            ERR_PRINT("Found multiple field offset candidates.");
             ntstatus = STATUS_INTERNAL_ERROR;
             goto exit;
         }
@@ -353,7 +353,7 @@ Remarks:
     {
         ERR_PRINT(
             "Failed to resolve connect data field offset for device."
-            " (DeviceObject = %p)\n",
+            " (DeviceObject = %p)",
             pDeviceObject);
         ntstatus = STATUS_UNSUCCESSFUL;
         goto exit;
@@ -402,7 +402,7 @@ MhdpResolveConnectDataFieldOffset(
     //
     *pcbConnectDataFieldOffset = 0;
 
-    DBG_PRINT("Resolving MouHid connect data field offset.\n");
+    DBG_PRINT("Resolving MouHid connect data field offset.");
 
     //
     // Open the MouHid driver object.
@@ -420,7 +420,7 @@ MhdpResolveConnectDataFieldOffset(
         (PVOID*)&pMouHidDriverObject);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("ObReferenceObjectByName failed: 0x%X\n", ntstatus);
+        ERR_PRINT("ObReferenceObjectByName failed: 0x%X", ntstatus);
         goto exit;
     }
     //
@@ -435,7 +435,7 @@ MhdpResolveConnectDataFieldOffset(
         &nMouHidDeviceObjectList);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("IouEnumerateDeviceObjectList failed: 0x%X\n", ntstatus);
+        ERR_PRINT("IouEnumerateDeviceObjectList failed: 0x%X", ntstatus);
         goto exit;
     }
 
@@ -458,7 +458,7 @@ MhdpResolveConnectDataFieldOffset(
         if (!NT_SUCCESS(ntstatus))
         {
             ERR_PRINT(
-                "MhdpResolveConnectDataFieldOffsetForDevice failed: 0x%X\n",
+                "MhdpResolveConnectDataFieldOffsetForDevice failed: 0x%X",
                 ntstatus);
             goto exit;
         }
@@ -467,7 +467,7 @@ MhdpResolveConnectDataFieldOffset(
         {
             if (cbFieldOffsetCandidate != cbFieldOffset)
             {
-                ERR_PRINT("Found multiple field offset candidates.\n");
+                ERR_PRINT("Found multiple field offset candidates.");
                 ntstatus = STATUS_INTERNAL_ERROR;
                 goto exit;
             }
@@ -480,7 +480,7 @@ MhdpResolveConnectDataFieldOffset(
     //
     if (!cbFieldOffsetCandidate)
     {
-        ERR_PRINT("Failed to resolve connect data field offset.\n");
+        ERR_PRINT("Failed to resolve connect data field offset.");
         ntstatus = STATUS_UNSUCCESSFUL;
         goto exit;
     }

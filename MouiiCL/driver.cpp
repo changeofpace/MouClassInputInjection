@@ -74,30 +74,10 @@ exit:
 }
 
 
-_Use_decl_annotations_
-BOOL
+VOID
 DrvTermination()
 {
-    BOOL status = TRUE;
-
-    if (!g_DriverContext.DeviceHandle)
-    {
-        goto exit;
-    }
-
-    status = CloseHandle(g_DriverContext.DeviceHandle);
-    if (!status)
-    {
-        goto exit;
-    }
-
-    //
-    // Update the global context.
-    //
-    g_DriverContext.DeviceHandle = NULL;
-
-exit:
-    return status;
+    VERIFY(CloseHandle(g_DriverContext.DeviceHandle));
 }
 
 

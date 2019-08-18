@@ -299,7 +299,7 @@ Remarks:
     BOOLEAN fCallbackRegistered = FALSE;
     NTSTATUS ntstatus = STATUS_SUCCESS;
 
-    DBG_PRINT("Loading %s.\n", MODULE_TITLE);
+    DBG_PRINT("Loading %s.", MODULE_TITLE);
 
     //
     // NOTE We must initialize the resource before registering the mouse
@@ -309,7 +309,7 @@ Remarks:
     ntstatus = ExInitializeResourceLite(&g_MiiManager.Resource);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("ExInitializeResourceLite failed: 0x%X\n", ntstatus);
+        ERR_PRINT("ExInitializeResourceLite failed: 0x%X", ntstatus);
         goto exit;
     }
     //
@@ -321,7 +321,7 @@ Remarks:
         &MousePnpNotificationHandle);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MclRegisterMousePnpNotificationCallback failed: 0x%X\n",
+        ERR_PRINT("MclRegisterMousePnpNotificationCallback failed: 0x%X",
             ntstatus);
         goto exit;
     }
@@ -333,7 +333,7 @@ Remarks:
     //
     g_MiiManager.MousePnpNotificationHandle = MousePnpNotificationHandle;
 
-    DBG_PRINT("%s loaded.\n", MODULE_TITLE);
+    DBG_PRINT("%s loaded.", MODULE_TITLE);
 
 exit:
     if (!NT_SUCCESS(ntstatus))
@@ -359,7 +359,7 @@ EXTERN_C
 VOID
 MiiDriverUnload()
 {
-    DBG_PRINT("Unloading %s.\n", MODULE_TITLE);
+    DBG_PRINT("Unloading %s.", MODULE_TITLE);
 
     MclUnregisterMousePnpNotificationCallback(
         g_MiiManager.MousePnpNotificationHandle);
@@ -372,7 +372,7 @@ MiiDriverUnload()
 
     VERIFY(ExDeleteResourceLite(&g_MiiManager.Resource));
 
-    DBG_PRINT("%s unloaded.\n", MODULE_TITLE);
+    DBG_PRINT("%s unloaded.", MODULE_TITLE);
 }
 
 
@@ -423,13 +423,12 @@ Remarks:
         pDeviceStackInformation,
         sizeof(*pDeviceStackInformation));
 
-    DBG_PRINT("Initializing the mouse device stack context.\n");
+    DBG_PRINT("Initializing the mouse device stack context.");
 
     pDeviceResolutionContext = MiipCreateDeviceResolutionContext();
     if (!pDeviceResolutionContext)
     {
-        ERR_PRINT("MiipCreateDeviceResolutionContext failed: 0x%X\n",
-            ntstatus);
+        ERR_PRINT("MiipCreateDeviceResolutionContext failed: 0x%X", ntstatus);
         ntstatus = STATUS_INSUFFICIENT_RESOURCES;
         goto exit;
     }
@@ -464,7 +463,7 @@ Remarks:
         &RegistrationHandle);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MhkRegisterCallbacks failed: 0x%X\n", ntstatus);
+        ERR_PRINT("MhkRegisterCallbacks failed: 0x%X", ntstatus);
         goto exit;
     }
     //
@@ -478,7 +477,7 @@ Remarks:
         DEVICE_RESOLUTION_TIMEOUT_SECONDS);
 
     DBG_PRINT(
-        "Waiting %u seconds for user to provide button and movement input.\n",
+        "Waiting %u seconds for user to provide button and movement input.",
         DEVICE_RESOLUTION_TIMEOUT_SECONDS);
 
     waitstatus = KeWaitForSingleObject(
@@ -495,13 +494,13 @@ Remarks:
     ntstatus = MhkUnregisterCallbacks(RegistrationHandle);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MhkUnregisterCallbacks failed: 0x%X\n", ntstatus);
+        ERR_PRINT("MhkUnregisterCallbacks failed: 0x%X", ntstatus);
         goto exit;
     }
     //
     fCallbacksRegistered = FALSE;
 
-    DBG_PRINT("Wait complete. Processed %Iu mouse input data packets.\n",
+    DBG_PRINT("Wait complete. Processed %Iu mouse input data packets.",
         pDeviceResolutionContext->NumberOfPacketsProcessed);
 
     switch (waitstatus)
@@ -510,19 +509,19 @@ Remarks:
             break;
 
         case STATUS_TIMEOUT:
-            ERR_PRINT("Device resolution callback timed out.\n");
+            ERR_PRINT("Device resolution callback timed out.");
             ntstatus = STATUS_IO_OPERATION_TIMEOUT;
             goto exit;
 
         default:
-            ERR_PRINT("KeWaitForSingleObject failed: 0x%X (Unexpected)\n");
+            ERR_PRINT("KeWaitForSingleObject failed: 0x%X (Unexpected)");
             ntstatus = STATUS_INTERNAL_ERROR;
             goto exit;
     }
     //
     if (!NT_SUCCESS(pDeviceResolutionContext->NtStatus))
     {
-        ERR_PRINT("Device resolution callback failed: 0x%X\n",
+        ERR_PRINT("Device resolution callback failed: 0x%X",
             pDeviceResolutionContext->NtStatus);
         ntstatus = pDeviceResolutionContext->NtStatus;
         goto exit;
@@ -547,7 +546,7 @@ Remarks:
         pDeviceResolutionContext->DeviceStackContext;
     pDeviceResolutionContext->DeviceStackContext = NULL;
 
-    DBG_PRINT("Mouse device stack context initialized.\n");
+    DBG_PRINT("Mouse device stack context initialized.");
 
 exit:
     if (fCallbacksRegistered)
@@ -605,14 +604,14 @@ Remarks:
 
     DBG_PRINT(
         "Injecting mouse button input data. "
-        " (ProcessId = 0x%IX, ButtonFlags = 0x%03hX, ButtonData = 0x%04hX)\n",
+        " (ProcessId = 0x%IX, ButtonFlags = 0x%03hX, ButtonData = 0x%04hX)",
         ProcessId,
         ButtonFlags,
         ButtonData);
 
     if (!MivValidateButtonInput(ButtonFlags, ButtonData))
     {
-        ERR_PRINT("MivValidateButtonInput failed.\n");
+        ERR_PRINT("MivValidateButtonInput failed.");
         ntstatus = STATUS_INVALID_PARAMETER;
         goto exit;
     }
@@ -622,7 +621,7 @@ Remarks:
 
     if (!g_MiiManager.DeviceStackContext)
     {
-        ERR_PRINT("Unexpected mouse device stack context.\n");
+        ERR_PRINT("Unexpected mouse device stack context.");
         ntstatus = STATUS_REINITIALIZATION_NEEDED;
         goto exit;
     }
@@ -637,8 +636,7 @@ Remarks:
         &InputPacket);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MiipAttachProcessInjectInputPacket failed: 0x%X\n",
-            ntstatus);
+        ERR_PRINT("MiipAttachProcessInjectInputPacket failed: 0x%X", ntstatus);
         goto exit;
     }
 
@@ -692,7 +690,7 @@ Remarks:
     DBG_PRINT(
         "Injecting mouse movement input data. "
         " (ProcessId = 0x%IX, IndicatorFlags = 0x%03hX, MovementX = %d,"
-        " MovementY = %d)\n",
+        " MovementY = %d)",
         ProcessId,
         IndicatorFlags,
         MovementX,
@@ -700,7 +698,7 @@ Remarks:
 
     if (!MivValidateMovementInput(IndicatorFlags, MovementX, MovementY))
     {
-        ERR_PRINT("MivValidateMovementInput failed.\n");
+        ERR_PRINT("MivValidateMovementInput failed.");
         ntstatus = STATUS_INVALID_PARAMETER;
         goto exit;
     }
@@ -710,7 +708,7 @@ Remarks:
 
     if (!g_MiiManager.DeviceStackContext)
     {
-        ERR_PRINT("Unexpected mouse device stack context.\n");
+        ERR_PRINT("Unexpected mouse device stack context.");
         ntstatus = STATUS_REINITIALIZATION_NEEDED;
         goto exit;
     }
@@ -722,7 +720,7 @@ Remarks:
     {
         if (!(MOUSE_MOVE_ABSOLUTE & IndicatorFlags))
         {
-            ERR_PRINT("Unexpected indicator flags. (movement type)\n");
+            ERR_PRINT("Unexpected indicator flags. (movement type)");
             ntstatus = STATUS_UNSUCCESSFUL;
             goto exit;
         }
@@ -731,7 +729,7 @@ Remarks:
     {
         if (MOUSE_MOVE_ABSOLUTE & IndicatorFlags)
         {
-            ERR_PRINT("Unexpected indicator flags. (movement type)\n");
+            ERR_PRINT("Unexpected indicator flags. (movement type)");
             ntstatus = STATUS_UNSUCCESSFUL;
             goto exit;
         }
@@ -741,7 +739,7 @@ Remarks:
     {
         if (!(MOUSE_VIRTUAL_DESKTOP & IndicatorFlags))
         {
-            ERR_PRINT("Unexpected indicator flags. (virtual desktop)\n");
+            ERR_PRINT("Unexpected indicator flags. (virtual desktop)");
             ntstatus = STATUS_UNSUCCESSFUL;
             goto exit;
         }
@@ -750,7 +748,7 @@ Remarks:
     {
         if (MOUSE_VIRTUAL_DESKTOP & IndicatorFlags)
         {
-            ERR_PRINT("Unexpected indicator flags. (virtual desktop)\n");
+            ERR_PRINT("Unexpected indicator flags. (virtual desktop)");
             ntstatus = STATUS_UNSUCCESSFUL;
             goto exit;
         }
@@ -771,8 +769,7 @@ Remarks:
         &InputPacket);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MiipAttachProcessInjectInputPacket failed: 0x%X\n",
-            ntstatus);
+        ERR_PRINT("MiipAttachProcessInjectInputPacket failed: 0x%X", ntstatus);
         goto exit;
     }
 
@@ -834,7 +831,7 @@ Remarks:
 
     if (!g_MiiManager.DeviceStackContext)
     {
-        ERR_PRINT("Unexpected mouse device stack context.\n");
+        ERR_PRINT("Unexpected mouse device stack context.");
         ntstatus = STATUS_REINITIALIZATION_NEEDED;
         goto exit;
     }
@@ -853,7 +850,7 @@ Remarks:
     DBG_PRINT(
         "Injecting mouse input data packet. "
         "(SC=%p DO=%p ID=%hu IF=0x%03hX BF=0x%03hX BD=0x%04hX RB=0x%X EX=0x%X"
-        " LX=%d LY=%d\n",
+        " LX=%d LY=%d",
         pConnectData->ClassService,
         pConnectData->ClassDeviceObject,
         pInputPacket->UnitId,
@@ -871,8 +868,7 @@ Remarks:
         &InputPacketNonPaged);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MiipAttachProcessInjectInputPacket failed: 0x%X\n",
-            ntstatus);
+        ERR_PRINT("MiipAttachProcessInjectInputPacket failed: 0x%X", ntstatus);
         goto exit;
     }
 
@@ -900,15 +896,15 @@ MiipMousePnpNotificationCallbackRoutine(
 #if defined(DBG)
     if (MousePnpNotificationEventArrival == Event)
     {
-        DBG_PRINT("Received mouse PnP notification. (Arrival)\n");
+        DBG_PRINT("Received mouse PnP notification. (Arrival)");
     }
     else if (MousePnpNotificationEventRemoval == Event)
     {
-        DBG_PRINT("Received mouse PnP notification. (Removal)\n");
+        DBG_PRINT("Received mouse PnP notification. (Removal)");
     }
     else
     {
-        ERR_PRINT("Received mouse PnP notification. (Unknown)\n");
+        ERR_PRINT("Received mouse PnP notification. (Unknown)");
         DEBUG_BREAK;
     }
 #else
@@ -926,7 +922,7 @@ MiipMousePnpNotificationCallbackRoutine(
         MiipFreeMouseDeviceStackContext(g_MiiManager.DeviceStackContext);
         g_MiiManager.DeviceStackContext = NULL;
 
-        DBG_PRINT("Mouse device stack context reset. (PnP)\n");
+        DBG_PRINT("Mouse device stack context reset. (PnP)");
     }
 
     ExReleaseResourceAndLeaveCriticalRegion(&g_MiiManager.Resource);
@@ -1049,29 +1045,29 @@ MiipPrintMouseDeviceStackContext(
     PMOUSE_DEVICE_STACK_CONTEXT pDeviceStackContext
 )
 {
-    DBG_PRINT("Mouse Device Stack Context:\n");
+    DBG_PRINT("Mouse Device Stack Context:");
 
-    DBG_PRINT("    Button Device\n");
-    DBG_PRINT("        ConnectData\n");
-    DBG_PRINT("            ClassDeviceObject:   %p\n",
+    DBG_PRINT("    Button Device");
+    DBG_PRINT("        ConnectData");
+    DBG_PRINT("            ClassDeviceObject:   %p",
         pDeviceStackContext->ButtonDevice.ConnectData.ClassDeviceObject);
-    DBG_PRINT("            ClassService:        %p\n",
+    DBG_PRINT("            ClassService:        %p",
         pDeviceStackContext->ButtonDevice.ConnectData.ClassService);
-    DBG_PRINT("        UnitId:                  %hu\n",
+    DBG_PRINT("        UnitId:                  %hu",
         pDeviceStackContext->ButtonDevice.UnitId);
 
-    DBG_PRINT("    Movement Device\n");
-    DBG_PRINT("        ConnectData\n");
-    DBG_PRINT("            ClassDeviceObject:   %p\n",
+    DBG_PRINT("    Movement Device");
+    DBG_PRINT("        ConnectData");
+    DBG_PRINT("            ClassDeviceObject:   %p",
         pDeviceStackContext->MovementDevice.ConnectData.ClassDeviceObject);
-    DBG_PRINT("            ClassService:        %p\n",
+    DBG_PRINT("            ClassService:        %p",
         pDeviceStackContext->MovementDevice.ConnectData.ClassService);
-    DBG_PRINT("        UnitId:                  %hu\n",
+    DBG_PRINT("        UnitId:                  %hu",
         pDeviceStackContext->MovementDevice.UnitId);
-    DBG_PRINT("        AbsoluteMovement:        %s\n",
+    DBG_PRINT("        AbsoluteMovement:        %s",
         pDeviceStackContext->MovementDevice.AbsoluteMovement ?
         "TRUE" : "FALSE");
-    DBG_PRINT("        VirtualDesktop:          %s\n",
+    DBG_PRINT("        VirtualDesktop:          %s",
         pDeviceStackContext->MovementDevice.VirtualDesktop ? "TRUE" : "FALSE");
 }
 #endif
@@ -1178,7 +1174,7 @@ Remarks:
         //
         if (!pInputPacket->UnitId)
         {
-            ERR_PRINT("Unexpected input packet data. (UnitId = 0)\n");
+            ERR_PRINT("Unexpected input packet data. (UnitId = 0)");
             fResolutionComplete = TRUE;
             ntstatus = STATUS_INVALID_ID_AUTHORITY;
             DEBUG_BREAK;
@@ -1191,7 +1187,7 @@ Remarks:
         //
         if (MOUSE_ATTRIBUTES_CHANGED & pInputPacket->Flags)
         {
-            ERR_PRINT("Mouse attributes changed during device resolution.\n");
+            ERR_PRINT("Mouse attributes changed during device resolution.");
             fResolutionComplete = TRUE;
             ntstatus = STATUS_REPARSE_ATTRIBUTE_CONFLICT;
             DEBUG_BREAK;
@@ -1267,7 +1263,7 @@ exit:
             FALSE);
         if (EventState)
         {
-            ERR_PRINT("Unexpected completion event state. (EventState = %d)\n",
+            ERR_PRINT("Unexpected completion event state. (EventState = %d)",
                 EventState);
             DEBUG_BREAK;
         }
@@ -1296,8 +1292,8 @@ MiipAttachProcessInjectInputPacket(
 {
     HANDLE EffectiveProcessId = NULL;
     PEPROCESS pProcess = NULL;
-    BOOLEAN fHasProcessReference = NULL;
-    BOOLEAN fHasProcessExitSynchronization = NULL;
+    BOOLEAN fHasProcessReference = FALSE;
+    BOOLEAN fHasProcessExitSynchronization = FALSE;
     KAPC_STATE ApcState = {};
     ULONG nInputPackets = 0;
     ULONG nPacketsConsumed = 0;
@@ -1315,7 +1311,7 @@ MiipAttachProcessInjectInputPacket(
     ntstatus = PsLookupProcessByProcessId(EffectiveProcessId, &pProcess);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("PsLookupProcessByProcessId failed: 0x%X\n", ntstatus);
+        ERR_PRINT("PsLookupProcessByProcessId failed: 0x%X", ntstatus);
         goto exit;
     }
     //
@@ -1324,7 +1320,7 @@ MiipAttachProcessInjectInputPacket(
     ntstatus = PsAcquireProcessExitSynchronization(pProcess);
     if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("PsAcquireProcessExitSynchronization failed: 0x%X\n",
+        ERR_PRINT("PsAcquireProcessExitSynchronization failed: 0x%X",
             ntstatus);
         goto exit;
     }
@@ -1351,7 +1347,7 @@ MiipAttachProcessInjectInputPacket(
     }
     __except (EXCEPTION_EXECUTE_HANDLER)
     {
-        ERR_PRINT("Unexpected exception: 0x%X\n", GetExceptionCode());
+        ERR_PRINT("Unexpected exception: 0x%X", GetExceptionCode());
         ntstatus = STATUS_UNSUCCESSFUL;
         goto exit;
     }
@@ -1362,7 +1358,7 @@ MiipAttachProcessInjectInputPacket(
     //
     if (nPacketsConsumed != nInputPackets)
     {
-        ERR_PRINT("Unexpected number of consumed packets.\n");
+        ERR_PRINT("Unexpected number of consumed packets.");
         ntstatus = STATUS_UNSUCCESSFUL;
         goto exit;
     }
