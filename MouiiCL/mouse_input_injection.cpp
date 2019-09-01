@@ -126,6 +126,7 @@ Remarks:
     if (!status)
     {
         ERR_PRINT("MivValidateButtonInput failed.");
+        SetLastError(ERROR_INVALID_PARAMETER);
         goto exit;
     }
 
@@ -184,6 +185,7 @@ Remarks:
     if (!status)
     {
         ERR_PRINT("MivValidateMovementInput failed.");
+        SetLastError(ERROR_INVALID_PARAMETER);
         goto exit;
     }
 
@@ -290,6 +292,7 @@ Remarks:
 
         default:
             ERR_PRINT("Unexpected Button: 0x%hX", Button);
+            SetLastError(ERROR_INVALID_PARAMETER);
             status = FALSE;
             goto exit;
     }
@@ -309,6 +312,7 @@ Remarks:
     if (!NT_SUCCESS(ntstatus))
     {
         ERR_PRINT("NtDelayExecution failed: 0x%X", ntstatus);
+        SetLastError(ERROR_UNIDENTIFIED_ERROR);
         status = FALSE;
         goto exit;
     }
