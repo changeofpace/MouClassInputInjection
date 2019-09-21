@@ -115,16 +115,20 @@ Remarks:
     //
     // Search the process snapshot for matching process names.
     //
-    for (pEntry = pSystemProcessInfo;
-        pEntry->NextEntryOffset;
+    for (pEntry = pSystemProcessInfo;;
         pEntry = OFFSET_POINTER(
             pEntry,
             pEntry->NextEntryOffset,
             SYSTEM_PROCESS_INFORMATION))
     {
-        if (!RtlCompareUnicodeString(&usProcessName, &pEntry->ImageName, TRUE))
+        if (RtlEqualUnicodeString(&usProcessName, &pEntry->ImageName, TRUE))
         {
             ProcessIds.emplace_back((ULONG_PTR)pEntry->UniqueProcessId);
+        }
+
+        if (!pEntry->NextEntryOffset)
+        {
+            break;
         }
     }
 
