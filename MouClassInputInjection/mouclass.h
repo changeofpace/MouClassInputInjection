@@ -21,12 +21,10 @@ for more information.
 //=============================================================================
 // Enumerations
 //=============================================================================
-typedef enum _MOUSE_PNP_NOTIFICATION_EVENT
-{
+typedef enum _MOUSE_PNP_NOTIFICATION_EVENT {
     MousePnpNotificationEventInvalid = 0,
     MousePnpNotificationEventArrival,
     MousePnpNotificationEventRemoval,
-
 } MOUSE_PNP_NOTIFICATION_EVENT, *PMOUSE_PNP_NOTIFICATION_EVENT;
 
 //=============================================================================

@@ -45,8 +45,8 @@ Remarks:
     receives mouse input data packets that contain button data.
 
 --*/
-typedef struct _MOUSE_CLASS_BUTTON_DEVICE
-{
+typedef struct _MOUSE_CLASS_BUTTON_DEVICE {
+
     //
     // The connect data information used by the MouHid driver to copy mouse
     //  input data packets to the mouse class button device object.
@@ -73,8 +73,8 @@ Remarks:
     receives mouse input data packets that contain movement data.
 
 --*/
-typedef struct _MOUSE_CLASS_MOVEMENT_DEVICE
-{
+typedef struct _MOUSE_CLASS_MOVEMENT_DEVICE {
+
     //
     // The connect data information used by the MouHid driver to copy mouse
     //  input data packets to the mouse class movement device object.
@@ -123,15 +123,13 @@ Remarks:
     injecting input packets in(to) one or both of the class data queues.
 
 --*/
-typedef struct _MOUSE_DEVICE_STACK_CONTEXT
-{
+typedef struct _MOUSE_DEVICE_STACK_CONTEXT {
     MOUSE_CLASS_BUTTON_DEVICE ButtonDevice;
     MOUSE_CLASS_MOVEMENT_DEVICE MovementDevice;
-
 } MOUSE_DEVICE_STACK_CONTEXT, *PMOUSE_DEVICE_STACK_CONTEXT;
 
-typedef struct _DEVICE_RESOLUTION_CONTEXT
-{
+typedef struct _DEVICE_RESOLUTION_CONTEXT {
+
     KSPIN_LOCK Lock;
 
     //
@@ -165,13 +163,10 @@ typedef struct _DEVICE_RESOLUTION_CONTEXT
 
 } DEVICE_RESOLUTION_CONTEXT, *PDEVICE_RESOLUTION_CONTEXT;
 
-typedef struct _MOUCLASS_INPUT_INJECTION_MANAGER
-{
+typedef struct _MOUCLASS_INPUT_INJECTION_MANAGER {
     HANDLE MousePnpNotificationHandle;
-
     POINTER_ALIGNMENT ERESOURCE Resource;
     _Guarded_by_(Resource) PMOUSE_DEVICE_STACK_CONTEXT DeviceStackContext;
-
 } MOUCLASS_INPUT_INJECTION_MANAGER, *PMOUCLASS_INPUT_INJECTION_MANAGER;
 
 
@@ -1254,7 +1249,7 @@ exit:
     }
 
     KeReleaseSpinLockFromDpcLevel(&pDeviceResolutionContext->Lock);
-    
+
     if (fResolutionComplete)
     {
         EventState = KeSetEvent(

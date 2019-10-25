@@ -121,9 +121,9 @@ main(
         goto exit;
     }
 
-    if (!DrvInitialization())
+    if (!MouiiIoInitialization())
     {
-        ERR_PRINT("DrvInitialization failed: %u", GetLastError());
+        ERR_PRINT("MouiiIoInitialization failed: %u", GetLastError());
         mainstatus = EXIT_FAILURE;
         goto exit;
     }
@@ -145,7 +145,7 @@ main(
 exit:
     if (fDriverInitialized)
     {
-        DrvTermination();
+        MouiiIoTermination();
     }
 
     return mainstatus;

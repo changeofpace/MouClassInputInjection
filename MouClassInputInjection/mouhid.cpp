@@ -53,8 +53,8 @@ for more information.
 //=============================================================================
 // Private Types
 //=============================================================================
-typedef struct _MOUHID_CONTEXT
-{
+typedef struct _MOUHID_CONTEXT {
+
     //
     // The field offset, in bytes, of the CONNECT_DATA object in the device
     //  extension of a MouHid device object.

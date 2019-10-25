@@ -35,8 +35,8 @@ for more information.
 //=============================================================================
 // Private Types
 //=============================================================================
-typedef struct _MOUHID_DEVICE_OBJECT
-{
+typedef struct _MOUHID_DEVICE_OBJECT {
+
     //
     // Referenced device object pointer for this MouHid device.
     //
@@ -64,34 +64,24 @@ Type Description:
     stack.
 
 --*/
-typedef struct _MOUHID_HOOK_CONTEXT
-{
+typedef struct _MOUHID_HOOK_CONTEXT {
     PMOUSE_SERVICE_CALLBACK_ROUTINE ServiceCallbackHook;
-
     ULONG NumberOfDeviceObjects;
     MOUHID_DEVICE_OBJECT DeviceObjectArray[ANYSIZE_ARRAY];
-
 } MOUHID_HOOK_CONTEXT, *PMOUHID_HOOK_CONTEXT;
 
-typedef struct _MHK_REGISTRATION_ENTRY
-{
+typedef struct _MHK_REGISTRATION_ENTRY {
     PMHK_HOOK_CALLBACK_ROUTINE HookCallback;
     PMHK_NOTIFICATION_CALLBACK_ROUTINE NotificationCallback;
     PVOID Context;
-
 } MHK_REGISTRATION_ENTRY, *PMHK_REGISTRATION_ENTRY;
 
-typedef struct _MOUHID_HOOK_MANAGER
-{
+typedef struct _MOUHID_HOOK_MANAGER {
     HANDLE MousePnpNotificationHandle;
-
     POINTER_ALIGNMENT ERESOURCE Resource;
-
     _Guarded_by_(Resource) BOOLEAN HookActive;
     _Guarded_by_(Resource) PMOUHID_HOOK_CONTEXT HookContext;
-
     _Guarded_by_(Resource) PMHK_REGISTRATION_ENTRY RegistrationEntry;
-
 } MOUHID_HOOK_MANAGER, *PMOUHID_HOOK_MANAGER;
 
 

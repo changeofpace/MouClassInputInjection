@@ -29,29 +29,22 @@ for more information.
 //=============================================================================
 // Private Types
 //=============================================================================
-typedef struct _PNP_NOTIFICATION_CONTEXT
-{
+typedef struct _PNP_NOTIFICATION_CONTEXT {
     _Interlocked_ volatile POINTER_ALIGNMENT LONG64 ArrivalEvents;
     _Interlocked_ volatile POINTER_ALIGNMENT LONG64 RemovalEvents;
-
 } PNP_NOTIFICATION_CONTEXT, *PPNP_NOTIFICATION_CONTEXT;
 
-typedef struct _MCL_REGISTRATION_ENTRY
-{
+typedef struct _MCL_REGISTRATION_ENTRY {
     LIST_ENTRY ListEntry;
     PMOUSE_PNP_NOTIFICATION_CALLBACK_ROUTINE Callback;
     PVOID Context;
-
 } MCL_REGISTRATION_ENTRY, *PMCL_REGISTRATION_ENTRY;
 
-typedef struct _MOUCLASS_MANAGER
-{
+typedef struct _MOUCLASS_MANAGER {
     PVOID PnpNotificationHandle;
     PNP_NOTIFICATION_CONTEXT PnpNotificationContext;
-
     POINTER_ALIGNMENT ERESOURCE Resource;
     _Guarded_by_(Resource) LIST_ENTRY RegisteredCallbackListHead;
-
 } MOUCLASS_MANAGER, *PMOUCLASS_MANAGER;
 
 

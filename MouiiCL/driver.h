@@ -18,23 +18,23 @@ for more information.
 //=============================================================================
 _Check_return_
 BOOL
-DrvInitialization();
+MouiiIoInitialization();
 
 VOID
-DrvTermination();
+MouiiIoTermination();
 
 //=============================================================================
 // Public Interface
 //=============================================================================
 _Check_return_
 BOOL
-DrvInitializeMouseDeviceStackContext(
+MouiiIoInitializeMouseDeviceStackContext(
     _Out_ PMOUSE_DEVICE_STACK_INFORMATION pDeviceStackInformation
 );
 
 _Check_return_
 BOOL
-DrvInjectMouseButtonInput(
+MouiiIoInjectMouseButtonInput(
     _In_ ULONG_PTR ProcessId,
     _In_ USHORT ButtonFlags,
     _In_ USHORT ButtonData
@@ -42,7 +42,7 @@ DrvInjectMouseButtonInput(
 
 _Check_return_
 BOOL
-DrvInjectMouseMovementInput(
+MouiiIoInjectMouseMovementInput(
     _In_ ULONG_PTR ProcessId,
     _In_ USHORT IndicatorFlags,
     _In_ LONG MovementX,
@@ -51,7 +51,7 @@ DrvInjectMouseMovementInput(
 
 _Check_return_
 BOOL
-DrvInjectMouseInputPacket(
+MouiiIoInjectMouseInputPacket(
     _In_ ULONG_PTR ProcessId,
     _In_ BOOL UseButtonDevice,
     _In_ PMOUSE_INPUT_DATA pInputPacket

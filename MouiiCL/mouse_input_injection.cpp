@@ -62,10 +62,10 @@ Remarks:
     INF_PRINT("Initializing the mouse device stack context for the driver.");
     INF_PRINT("Waiting for user to provide mouse button and movement input.");
 
-    status = DrvInitializeMouseDeviceStackContext(&DeviceStackInformation);
+    status = MouiiIoInitializeMouseDeviceStackContext(&DeviceStackInformation);
     if (!status)
     {
-        ERR_PRINT("DrvInitializeMouseDeviceStackContext failed: %u",
+        ERR_PRINT("MouiiIoInitializeMouseDeviceStackContext failed: %u",
             GetLastError());
         goto exit;
     }
@@ -130,10 +130,10 @@ Remarks:
         goto exit;
     }
 
-    status = DrvInjectMouseButtonInput(ProcessId, ButtonFlags, ButtonData);
+    status = MouiiIoInjectMouseButtonInput(ProcessId, ButtonFlags, ButtonData);
     if (!status)
     {
-        ERR_PRINT("DrvInjectMouseButtonInput failed: %u", GetLastError());
+        ERR_PRINT("MouiiIoInjectMouseButtonInput failed: %u", GetLastError());
         goto exit;
     }
 
@@ -189,14 +189,15 @@ Remarks:
         goto exit;
     }
 
-    status = DrvInjectMouseMovementInput(
+    status = MouiiIoInjectMouseMovementInput(
         ProcessId,
         IndicatorFlags,
         MovementX,
         MovementY);
     if (!status)
     {
-        ERR_PRINT("DrvInjectMouseMovementInput failed: %u", GetLastError());
+        ERR_PRINT("MouiiIoInjectMouseMovementInput failed: %u",
+            GetLastError());
         goto exit;
     }
 
@@ -301,10 +302,10 @@ Remarks:
         &DelayInterval,
         ReleaseDelayInMilliseconds);
 
-    status = DrvInjectMouseButtonInput(ProcessId, Button, 0);
+    status = MouiiIoInjectMouseButtonInput(ProcessId, Button, 0);
     if (!status)
     {
-        ERR_PRINT("DrvInjectMouseButtonInput failed: %u", GetLastError());
+        ERR_PRINT("MouiiIoInjectMouseButtonInput failed: %u", GetLastError());
         goto exit;
     }
 
@@ -317,10 +318,10 @@ Remarks:
         goto exit;
     }
 
-    status = DrvInjectMouseButtonInput(ProcessId, ReleaseButton, 0);
+    status = MouiiIoInjectMouseButtonInput(ProcessId, ReleaseButton, 0);
     if (!status)
     {
-        ERR_PRINT("DrvInjectMouseButtonInput failed: %u", GetLastError());
+        ERR_PRINT("MouiiIoInjectMouseButtonInput failed: %u", GetLastError());
         goto exit;
     }
 
@@ -366,13 +367,13 @@ Remarks:
 {
     BOOL status = TRUE;
 
-    status = DrvInjectMouseInputPacket(
+    status = MouiiIoInjectMouseInputPacket(
         ProcessId,
         UseButtonDevice,
         pInputPacket);
     if (!status)
     {
-        ERR_PRINT("DrvInjectMouseInputPacket failed: %u", GetLastError());
+        ERR_PRINT("MouiiIoInjectMouseInputPacket failed: %u", GetLastError());
         goto exit;
     }
 

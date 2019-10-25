@@ -7,7 +7,7 @@ for more information.
 
 --*/
 
-#include <fltKernel.h>
+#include "driver.h"
 
 #include "debug.h"
 #include "log.h"
@@ -16,37 +16,6 @@ for more information.
 #include "mouhid_hook_manager.h"
 
 #include "../Common/ioctl.h"
-
-
-//=============================================================================
-// Private Prototypes
-//=============================================================================
-EXTERN_C
-DRIVER_INITIALIZE
-DriverEntry;
-
-EXTERN_C
-static
-DRIVER_UNLOAD
-DriverUnload;
-
-_Dispatch_type_(IRP_MJ_CREATE)
-EXTERN_C
-static
-DRIVER_DISPATCH
-DispatchCreate;
-
-_Dispatch_type_(IRP_MJ_CLOSE)
-EXTERN_C
-static
-DRIVER_DISPATCH
-DispatchClose;
-
-_Dispatch_type_(IRP_MJ_DEVICE_CONTROL)
-EXTERN_C
-static
-DRIVER_DISPATCH
-DispatchDeviceControl;
 
 
 //=============================================================================
@@ -89,11 +58,13 @@ DriverEntry(
         goto exit;
     }
     //
-    pDriverObject->MajorFunction[IRP_MJ_CREATE] = DispatchCreate;
-    pDriverObject->MajorFunction[IRP_MJ_CLOSE] = DispatchClose;
+    pDriverObject->MajorFunction[IRP_MJ_CREATE] =
+        MouClassInputInjectionDispatchCreate;
+    pDriverObject->MajorFunction[IRP_MJ_CLOSE] =
+        MouClassInputInjectionDispatchClose;
     pDriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] =
-        DispatchDeviceControl;
-    pDriverObject->DriverUnload = DriverUnload;
+        MouClassInputInjectionDispatchDeviceControl;
+    pDriverObject->DriverUnload = MouClassInputInjectionDriverUnload;
 
     //
     // Create a symbolic link for the user mode client.
@@ -183,9 +154,8 @@ exit:
 
 _Use_decl_annotations_
 EXTERN_C
-static
 VOID
-DriverUnload(
+MouClassInputInjectionDriverUnload(
     PDRIVER_OBJECT pDriverObject
 )
 {
@@ -217,13 +187,12 @@ DriverUnload(
 
 
 //=============================================================================
-// Private Interface
+// Public Interface
 //=============================================================================
 _Use_decl_annotations_
 EXTERN_C
-static
 NTSTATUS
-DispatchCreate(
+MouClassInputInjectionDispatchCreate(
     PDEVICE_OBJECT pDeviceObject,
     PIRP pIrp
 )
@@ -237,9 +206,8 @@ DispatchCreate(
 
 _Use_decl_annotations_
 EXTERN_C
-static
 NTSTATUS
-DispatchClose(
+MouClassInputInjectionDispatchClose(
     PDEVICE_OBJECT pDeviceObject,
     PIRP pIrp
 )
@@ -253,9 +221,8 @@ DispatchClose(
 
 _Use_decl_annotations_
 EXTERN_C
-static
 NTSTATUS
-DispatchDeviceControl(
+MouClassInputInjectionDispatchDeviceControl(
     PDEVICE_OBJECT pDeviceObject,
     PIRP pIrp
 )

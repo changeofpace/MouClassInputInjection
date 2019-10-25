@@ -19,10 +19,8 @@ for more information.
 //=============================================================================
 // Private Types
 //=============================================================================
-typedef struct _DRIVER_CONTEXT
-{
+typedef struct _DRIVER_CONTEXT {
     HANDLE DeviceHandle;
-
 } DRIVER_CONTEXT, *PDRIVER_CONTEXT;
 
 
@@ -37,7 +35,7 @@ static DRIVER_CONTEXT g_DriverContext = {};
 //=============================================================================
 _Use_decl_annotations_
 BOOL
-DrvInitialization()
+MouiiIoInitialization()
 {
     HANDLE hDevice = INVALID_HANDLE_VALUE;
     BOOL status = TRUE;
@@ -75,7 +73,7 @@ exit:
 
 
 VOID
-DrvTermination()
+MouiiIoTermination()
 {
     VERIFY(CloseHandle(g_DriverContext.DeviceHandle));
 }
@@ -84,16 +82,9 @@ DrvTermination()
 //=============================================================================
 // Public Interface
 //=============================================================================
-
-//
-// Suppress signed/unsigned mismatch warnings for Ioctl codes.
-//
-#pragma warning(push)
-#pragma warning(disable:4245)
-
 _Use_decl_annotations_
 BOOL
-DrvInitializeMouseDeviceStackContext(
+MouiiIoInitializeMouseDeviceStackContext(
     PMOUSE_DEVICE_STACK_INFORMATION pDeviceStackInformation
 )
 {
@@ -137,7 +128,7 @@ exit:
 
 _Use_decl_annotations_
 BOOL
-DrvInjectMouseButtonInput(
+MouiiIoInjectMouseButtonInput(
     ULONG_PTR ProcessId,
     USHORT ButtonFlags,
     USHORT ButtonData
@@ -175,7 +166,7 @@ exit:
 
 _Use_decl_annotations_
 BOOL
-DrvInjectMouseMovementInput(
+MouiiIoInjectMouseMovementInput(
     ULONG_PTR ProcessId,
     USHORT IndicatorFlags,
     LONG MovementX,
@@ -215,7 +206,7 @@ exit:
 
 _Use_decl_annotations_
 BOOL
-DrvInjectMouseInputPacket(
+MouiiIoInjectMouseInputPacket(
     ULONG_PTR ProcessId,
     BOOL UseButtonDevice,
     PMOUSE_INPUT_DATA pInputPacket
@@ -252,5 +243,3 @@ DrvInjectMouseInputPacket(
 exit:
     return status;
 }
-
-#pragma warning(pop) // disable:4245
