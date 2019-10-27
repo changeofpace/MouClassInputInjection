@@ -21,7 +21,7 @@ for more information.
 //=============================================================================
 // Constants
 //=============================================================================
-#if defined(STATIC_LIBRARY)
+#if defined(LIBRARY_BUILD)
 #define MOUCLASSINPUTINJECTION_DRIVER_ENTRY_NAME \
     MouClassInputInjectionDriverEntry
 #else
