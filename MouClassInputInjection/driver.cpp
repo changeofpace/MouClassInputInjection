@@ -19,12 +19,23 @@ for more information.
 
 
 //=============================================================================
+// Constants
+//=============================================================================
+#if defined(STATIC_LIBRARY)
+#define MOUCLASSINPUTINJECTION_DRIVER_ENTRY_NAME \
+    MouClassInputInjectionDriverEntry
+#else
+#define MOUCLASSINPUTINJECTION_DRIVER_ENTRY_NAME    DriverEntry
+#endif
+
+
+//=============================================================================
 // Meta Interface
 //=============================================================================
 _Use_decl_annotations_
 EXTERN_C
 NTSTATUS
-DriverEntry(
+MOUCLASSINPUTINJECTION_DRIVER_ENTRY_NAME(
     PDRIVER_OBJECT pDriverObject,
     PUNICODE_STRING pRegistryPath
 )

@@ -16,7 +16,7 @@ for more information.
 //=============================================================================
 EXTERN_C
 DRIVER_INITIALIZE
-DriverEntry;
+MouClassInputInjectionDriverEntry;
 
 EXTERN_C
 DRIVER_UNLOAD
