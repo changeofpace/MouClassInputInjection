@@ -117,7 +117,6 @@
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\mouse_input_validation.cpp" />
     <ClCompile Include="driver.cpp" />
     <ClCompile Include="io_util.cpp" />
     <ClCompile Include="log.cpp" />
@@ -125,12 +124,12 @@
     <ClCompile Include="mouclass_input_injection.cpp" />
     <ClCompile Include="mouhid.cpp" />
     <ClCompile Include="mouhid_hook_manager.cpp" />
+    <ClCompile Include="mouse_input_validation.cpp" />
     <ClCompile Include="object_util.cpp" />
     <ClCompile Include="pe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Common\ioctl.h" />
-    <ClInclude Include="..\Common\mouse_input_validation.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="driver.h" />
     <ClInclude Include="io_util.h" />
@@ -139,6 +138,7 @@
     <ClInclude Include="mouclass_input_injection.h" />
     <ClInclude Include="mouhid.h" />
     <ClInclude Include="mouhid_hook_manager.h" />
+    <ClInclude Include="mouse_input_validation.h" />
     <ClInclude Include="nt.h" />
     <ClInclude Include="object_util.h" />
     <ClInclude Include="pe.h" />

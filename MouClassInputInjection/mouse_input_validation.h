@@ -9,15 +9,11 @@ for more information.
 
 #pragma once
 
-#if defined(_KERNEL_MODE)
 #include <fltKernel.h>
-#else
-#include <Windows.h>
-#endif
 
 _Check_return_
 EXTERN_C
-BOOLEAN
+NTSTATUS
 MivValidateButtonInput(
     _In_ USHORT ButtonFlags,
     _In_ USHORT ButtonData
@@ -25,7 +21,7 @@ MivValidateButtonInput(
 
 _Check_return_
 EXTERN_C
-BOOLEAN
+NTSTATUS
 MivValidateMovementInput(
     _In_ USHORT IndicatorFlags,
     _In_ LONG MovementX,

@@ -150,7 +150,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\mouse_input_validation.cpp" />
     <ClCompile Include="commands.cpp" />
     <ClCompile Include="driver.cpp" />
     <ClCompile Include="log.cpp" />
@@ -161,7 +160,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Common\ioctl.h" />
-    <ClInclude Include="..\Common\mouse_input_validation.h" />
     <ClInclude Include="..\Common\time.h" />
     <ClInclude Include="commands.h" />
     <ClInclude Include="debug.h" />

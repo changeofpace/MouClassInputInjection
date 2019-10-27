@@ -16,9 +16,9 @@ for more information.
 #include "log.h"
 #include "mouclass.h"
 #include "mouhid_hook_manager.h"
+#include "mouse_input_validation.h"
 #include "nt.h"
 
-#include "../Common/mouse_input_validation.h"
 #include "../Common/time.h"
 
 
@@ -604,10 +604,10 @@ Remarks:
         ButtonFlags,
         ButtonData);
 
-    if (!MivValidateButtonInput(ButtonFlags, ButtonData))
+    ntstatus = MivValidateButtonInput(ButtonFlags, ButtonData);
+    if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MivValidateButtonInput failed.");
-        ntstatus = STATUS_INVALID_PARAMETER;
+        ERR_PRINT("MivValidateMovementInput failed: 0x%X", ntstatus);
         goto exit;
     }
 
@@ -691,10 +691,10 @@ Remarks:
         MovementX,
         MovementY);
 
-    if (!MivValidateMovementInput(IndicatorFlags, MovementX, MovementY))
+    ntstatus = MivValidateMovementInput(IndicatorFlags, MovementX, MovementY);
+    if (!NT_SUCCESS(ntstatus))
     {
-        ERR_PRINT("MivValidateMovementInput failed.");
-        ntstatus = STATUS_INVALID_PARAMETER;
+        ERR_PRINT("MivValidateMovementInput failed: 0x%X", ntstatus);
         goto exit;
     }
 

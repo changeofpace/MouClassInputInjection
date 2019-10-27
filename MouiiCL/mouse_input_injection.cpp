@@ -15,7 +15,6 @@ for more information.
 #include "log.h"
 #include "ntdll.h"
 
-#include "../Common/mouse_input_validation.h"
 #include "../Common/time.h"
 
 
@@ -120,25 +119,7 @@ Remarks:
 
 --*/
 {
-    BOOL status = TRUE;
-
-    status = MivValidateButtonInput(ButtonFlags, ButtonData);
-    if (!status)
-    {
-        ERR_PRINT("MivValidateButtonInput failed.");
-        SetLastError(ERROR_INVALID_PARAMETER);
-        goto exit;
-    }
-
-    status = MouiiIoInjectMouseButtonInput(ProcessId, ButtonFlags, ButtonData);
-    if (!status)
-    {
-        ERR_PRINT("MouiiIoInjectMouseButtonInput failed: %u", GetLastError());
-        goto exit;
-    }
-
-exit:
-    return status;
+    return MouiiIoInjectMouseButtonInput(ProcessId, ButtonFlags, ButtonData);
 }
 
 
@@ -179,30 +160,11 @@ Remarks:
 
 --*/
 {
-    BOOL status = TRUE;
-
-    status = MivValidateMovementInput(IndicatorFlags, MovementX, MovementY);
-    if (!status)
-    {
-        ERR_PRINT("MivValidateMovementInput failed.");
-        SetLastError(ERROR_INVALID_PARAMETER);
-        goto exit;
-    }
-
-    status = MouiiIoInjectMouseMovementInput(
+    return MouiiIoInjectMouseMovementInput(
         ProcessId,
         IndicatorFlags,
         MovementX,
         MovementY);
-    if (!status)
-    {
-        ERR_PRINT("MouiiIoInjectMouseMovementInput failed: %u",
-            GetLastError());
-        goto exit;
-    }
-
-exit:
-    return status;
 }
 
 

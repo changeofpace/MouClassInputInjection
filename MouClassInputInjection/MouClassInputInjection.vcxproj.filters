@@ -38,7 +38,7 @@
     <ClCompile Include="log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\mouse_input_validation.cpp">
+    <ClCompile Include="mouse_input_validation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -73,13 +73,13 @@
     <ClInclude Include="log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\mouse_input_validation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\ioctl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="driver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mouse_input_validation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

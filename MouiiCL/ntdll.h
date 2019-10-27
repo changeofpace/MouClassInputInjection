@@ -38,8 +38,7 @@ typedef _Return_type_success_(return >= 0) LONG NTSTATUS;
 //=============================================================================
 // Enumerations
 //=============================================================================
-typedef enum _SYSTEM_INFORMATION_CLASS
-{
+typedef enum _SYSTEM_INFORMATION_CLASS {
     SystemBasicInformation = 0,
     SystemPerformanceInformation = 2,
     SystemTimeOfDayInformation = 3,
@@ -50,7 +49,6 @@ typedef enum _SYSTEM_INFORMATION_CLASS
     SystemRegistryQuotaInformation = 37,
     SystemLookasideInformation = 45,
     SystemPolicyInformation = 134,
-
 } SYSTEM_INFORMATION_CLASS;
 
 //=============================================================================
@@ -59,28 +57,23 @@ typedef enum _SYSTEM_INFORMATION_CLASS
 typedef _Null_terminated_ CHAR *PSZ;
 typedef _Null_terminated_ CONST char *PCSZ;
 
-typedef struct _STRING
-{
+typedef struct _STRING {
     USHORT Length;
     USHORT MaximumLength;
     PCHAR  Buffer;
-
 } ANSI_STRING, *PANSI_STRING;
 typedef const ANSI_STRING *PCANSI_STRING;
 
-typedef struct _UNICODE_STRING
-{
+typedef struct _UNICODE_STRING {
     USHORT Length;
     USHORT MaximumLength;
     _Field_size_bytes_part_opt_(MaximumLength, Length) PWCH Buffer;
-
 } UNICODE_STRING, *PUNICODE_STRING;
 typedef const UNICODE_STRING *PCUNICODE_STRING;
 
 typedef LONG KPRIORITY;
 
-typedef struct _SYSTEM_PROCESS_INFORMATION
-{
+typedef struct _SYSTEM_PROCESS_INFORMATION {
     ULONG NextEntryOffset;
     BYTE Reserved1[52];
     UNICODE_STRING ImageName;
@@ -93,7 +86,6 @@ typedef struct _SYSTEM_PROCESS_INFORMATION
     SIZE_T PeakPagefileUsage;
     SIZE_T PrivatePageCount;
     LARGE_INTEGER Reserved6[6];
-
 } SYSTEM_PROCESS_INFORMATION, *PSYSTEM_PROCESS_INFORMATION;
 
 //=============================================================================

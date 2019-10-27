@@ -29,13 +29,13 @@ for more information.
 //=============================================================================
 _Use_decl_annotations_
 EXTERN_C
-BOOLEAN
+NTSTATUS
 MivValidateButtonInput(
     USHORT ButtonFlags,
     USHORT ButtonData
 )
 {
-    BOOLEAN status = TRUE;
+    NTSTATUS ntstatus = STATUS_SUCCESS;
 
     switch (ButtonFlags)
     {
@@ -51,7 +51,7 @@ MivValidateButtonInput(
         case MOUSE_BUTTON_5_UP:
             if (ButtonData)
             {
-                status = FALSE;
+                ntstatus = STATUS_INVALID_PARAMETER_1;
                 goto exit;
             }
 
@@ -61,39 +61,39 @@ MivValidateButtonInput(
         case MOUSE_HWHEEL:
             if (!ButtonData)
             {
-                status = FALSE;
+                ntstatus = STATUS_INVALID_PARAMETER_2;
                 goto exit;
             }
 
             break;
 
         default:
-            status = FALSE;
+            ntstatus = STATUS_INVALID_PARAMETER;
             goto exit;
     }
 
 exit:
-    return status;
+    return ntstatus;
 }
 
 
 _Use_decl_annotations_
 EXTERN_C
-BOOLEAN
+NTSTATUS
 MivValidateMovementInput(
     USHORT IndicatorFlags,
     LONG MovementX,
     LONG MovementY
 )
 {
-    BOOLEAN status = TRUE;
+    NTSTATUS ntstatus = STATUS_SUCCESS;
 
     UNREFERENCED_PARAMETER(MovementX);
     UNREFERENCED_PARAMETER(MovementY);
 
     if ((~VALID_INDICATOR_FLAGS_MASK) & IndicatorFlags)
     {
-        status = FALSE;
+        ntstatus = STATUS_INVALID_PARAMETER_1;
         goto exit;
     }
 
@@ -103,7 +103,7 @@ MivValidateMovementInput(
     if (MOUSE_MOVE_RELATIVE & IndicatorFlags &&
         (~MOUSE_MOVE_RELATIVE) & IndicatorFlags)
     {
-        status = FALSE;
+        ntstatus = STATUS_INVALID_PARAMETER_1;
         goto exit;
     }
 
@@ -113,7 +113,7 @@ MivValidateMovementInput(
     if (MOUSE_MOVE_RELATIVE & IndicatorFlags &&
         MOUSE_MOVE_ABSOLUTE & IndicatorFlags)
     {
-        status = FALSE;
+        ntstatus = STATUS_INVALID_PARAMETER_1;
         goto exit;
     }
 
@@ -123,7 +123,7 @@ MivValidateMovementInput(
     if (MOUSE_ATTRIBUTES_CHANGED & IndicatorFlags &&
         (~MOUSE_ATTRIBUTES_CHANGED) & IndicatorFlags)
     {
-        status = FALSE;
+        ntstatus = STATUS_INVALID_PARAMETER_1;
         goto exit;
     }
 
@@ -132,10 +132,10 @@ MivValidateMovementInput(
     //
     if (MOUSE_TERMSRV_SRC_SHADOW & IndicatorFlags)
     {
-        status = FALSE;
+        ntstatus = STATUS_INVALID_PARAMETER_1;
         goto exit;
     }
 
 exit:
-    return status;
+    return ntstatus;
 }

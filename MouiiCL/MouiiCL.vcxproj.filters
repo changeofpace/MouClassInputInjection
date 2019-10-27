@@ -26,9 +26,6 @@
     <ClCompile Include="commands.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\mouse_input_validation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="process.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -65,9 +62,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="commands.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\mouse_input_validation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
