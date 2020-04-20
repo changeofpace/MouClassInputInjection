@@ -44,6 +44,9 @@ DriverEntry(
 
     usDeviceName = RTL_CONSTANT_STRING(NT_DEVICE_NAME_U);
 
+    //
+    // TODO Use IoCreateDeviceSecure.
+    //
     ntstatus = IoCreateDevice(
         pDriverObject,
         0,

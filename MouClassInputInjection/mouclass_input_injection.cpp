@@ -1285,7 +1285,6 @@ MiipAttachProcessInjectInputPacket(
     PMOUSE_INPUT_DATA pInputPacket
 )
 {
-    HANDLE EffectiveProcessId = NULL;
     PEPROCESS pProcess = NULL;
     BOOLEAN fHasProcessReference = FALSE;
     BOOLEAN fHasProcessExitSynchronization = FALSE;
@@ -1294,16 +1293,7 @@ MiipAttachProcessInjectInputPacket(
     ULONG nPacketsConsumed = 0;
     NTSTATUS ntstatus = STATUS_SUCCESS;
 
-    if (NtCurrentProcess() != ProcessId)
-    {
-        EffectiveProcessId = ProcessId;
-    }
-    else
-    {
-        EffectiveProcessId = PsGetCurrentProcessId();
-    }
-
-    ntstatus = PsLookupProcessByProcessId(EffectiveProcessId, &pProcess);
+    ntstatus = PsLookupProcessByProcessId(ProcessId, &pProcess);
     if (!NT_SUCCESS(ntstatus))
     {
         ERR_PRINT("PsLookupProcessByProcessId failed: 0x%X", ntstatus);
